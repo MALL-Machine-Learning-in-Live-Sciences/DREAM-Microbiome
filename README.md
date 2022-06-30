@@ -6,6 +6,7 @@
  3. Feature selection from longitudinal data (@Jose)
  4. Create docker environment (@Carlos)
  5. Exploratory analysis (@Diego)
+ 6. Create project and team (@all)
 
 ## Dataset download
 From [here](https://www.synapse.org/#!Synapse:syn32293293). Unzip file after creating ```/extdata``` folder.
