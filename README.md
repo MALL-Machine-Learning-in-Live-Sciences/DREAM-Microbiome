@@ -8,3 +8,6 @@
 ## Dataset download
 From [here](https://www.synapse.org/#!Synapse:syn32293293). Unzip file after creating ```/extdata``` folder.
 
+## Deadlines
+Tues, July 19, 2022	Submission opens for both tasks
+Wed, August 31, 2022	Submission deadline to both tasks
