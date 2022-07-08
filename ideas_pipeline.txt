@@ -1,0 +1,11 @@
+- eliminar pacientes que tengan una sola visita (dos?)
+- usar la abundancia relativa para calcular lo siguiente:
+- identificar los bichos más correlacionados con el collect_week en pacientes pretérmino
+- identificar los bichos más correlacionados con el collect_week en pacientes término
+- hacer intersect entre ambos vectores, y quedarse únicamente los que aparezcan en el pretérmino y no en término
+- quedarnos con aquellos donde la diferencia se observe principalmente entre las semanas 25-30 aprox 
+- el modelo como base tendrá la expresión de esos bichos y la variable collect_week
+- a partir de ahí ir añadiendo otro tipo de variables como alpha/beta diversity, etc.
+
+
+# 
