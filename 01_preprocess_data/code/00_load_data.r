@@ -1,5 +1,5 @@
 # Load data
-setwd('~/git/DREAM-Microbiome/')
+setwd('~/projects/DREAM-Microbiome/')
 
 # Alpha diversity
 alpha = read.csv('extdata/alpha_diversity/alpha_diversity.csv', header = T, row.names = 1)
@@ -31,3 +31,8 @@ head(pairwise)
 # Taxonomy
 tax = read.csv('extdata/taxonomy/taxonomy_nreads.species.csv', header = T)
 tax[1:5, 1:5]
+
+
+
+
+
