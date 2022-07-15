@@ -1,11 +1,19 @@
-# Metadata
-setwd("projects/DREAM-Microbiome/")
-meta = read.csv('extdata/metadata/metadata.csv', header = T)
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
+# Arguments
+counts = 'relabd' # relabd nreads
+level = 'species' # species genus family
+nreps = 10        # min number of patients with tax corr > 0.5
+
+# Load data
+meta = read.csv('../../extdata/metadata/metadata.csv', header = T)
+tax = read.csv(paste0('../../extdata/taxonomy/taxonomy_', counts, '.', level, '.csv'), header = T, row.names = 1)
+
 # NO TERM
-no.term = meta[which(meta$project == 'False' & meta$project != 'I'),] # project I no has longitudinal data
-no.term = no.term[which(no.term$collect_wk >= 20 & no.term$collect_wk <= 32),] # Select samples collected beetween 25 -30 weeks  
-participants = names(which(table(no.term$participant_id) > 2)) # Select visits of preterm participants with more than 2 visits 
-ex.participants = names(which(table(no.term$participant_id)>= 2))# Select visits of preterm participants with equal or less than 2 visits 
+no.term = meta[which(meta$was_term == 'False' & meta$project != 'I'),]            # project I no has longitudinal data
+# no.term = no.term[which(no.term$collect_wk >= 20 & no.term$collect_wk <= 32),]    # Select samples collected beetween 25 -30 weeks
+participants = names(which(table(no.term$participant_id) > 2))                    # Select visits of preterm participants with more than 2 visits 
+# ex.participants = names(which(table(no.term$participant_id)>= 2))                 # Select visits of preterm participants with equal or less than 2 visits 
 
 
 visits = list()
@@ -13,11 +21,7 @@ for (i in seq_along(participants)) {
   visits[[i]] = meta[which(meta$participant_id == participants[i]), ]$specimen
 }
 names(visits) = participants
-head(visits)
-sum(lengths(visits))
-# species taxonomic data with relative abundance
-tax = read.csv('extdata/taxonomy/taxonomy_relabd.species.csv', header = T, row.names = 1)
-tax[1:5, 1:5]
+# sum(lengths(visits))
 
 
 # calculate correlation between species and collect_wk
@@ -43,28 +47,28 @@ names(corrs) = names(visits)
 names(collect.l) = names(visits)
 names(tax.d.l) = names(visits)
 
-hist(unlist(corrs), 100)
-lapply(corrs, function(x) length(x))
+# hist(unlist(corrs), 100)
+# lapply(corrs, function(x) length(x))
 
 
 species = substr(names((unlist(corrs))), 8, 300)
-species.no_term = table(species)[which(table(species) > 10)]
-names(species.no_term)
-plot(collect.l$A00008, tax.d.l$A00008$Fenollaria.massiliensis)
+species.no_term = table(species)[which(table(species) > nreps)]
+# names(species.no_term)
+# plot(collect.l$A00008, tax.d.l$A00008$Fenollaria.massiliensis)
 
 # TERM
 term = meta[which(meta$was_term == 'True' & meta$project != 'I'),] # project I no has longitudinal data
-term = term[which(term$collect_wk >= 20 & term$collect_wk <= 32),] 
+# term = term[which(term$collect_wk >= 20 & term$collect_wk <= 32),] 
 participants = names(which(table(term$participant_id) > 2)) # Select visits of preterm participants with more than 2 visits 
-ex.participants = names(which(table(term$participant_id)>= 2))# Select visits of preterm participants with equal or less than 2 visits 
+# ex.participants = names(which(table(term$participant_id)>= 2))# Select visits of preterm participants with equal or less than 2 visits 
 
 visits = list()
 for (i in seq_along(participants)) {
   visits[[i]] = meta[which(meta$participant_id == participants[i]), ]$specimen
 }
 names(visits) = participants
-head(visits)
-sum(lengths(visits))
+# head(visits)
+# sum(lengths(visits))
 # calculate correlation between species and collect_wk
 collect.l = list()
 tax.d.l =list()
@@ -88,13 +92,13 @@ names(corrs) = names(visits)
 names(collect.l) = names(visits)
 names(tax.d.l) = names(visits)
 
-hist(unlist(corrs), 100)
-lapply(corrs, function(x) length(x))
+# hist(unlist(corrs), 100)
+# lapply(corrs, function(x) length(x))
 
 species = substr(names((unlist(corrs))), 8, 300)
-species.term = table(species)[which(table(species) > 10)]
-names(species.term)
-plot(collect.l$A00011, tax.d.l$A00011$Ureaplasma)
+species.term = table(species)[which(table(species) > nreps)]
+# names(species.term)
+# plot(collect.l$A00011, tax.d.l$A00011$Ureaplasma)
 
 #Spps
 shared = intersect(x= names(species.no_term), y = names(species.term))
