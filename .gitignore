@@ -1,2 +1,6 @@
 extdata/
 .DS_Store
+plots/*.pdf
+plots/*.png
+plots/*.eps
+plots/*.jpeg

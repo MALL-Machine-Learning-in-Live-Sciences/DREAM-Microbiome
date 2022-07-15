@@ -1,23 +1,28 @@
 # Metadata
+setwd("projects/DREAM-Microbiome/")
 meta = read.csv('extdata/metadata/metadata.csv', header = T)
-no.term = meta[which(meta$was_term == 'False' & meta$project != 'I'),]            # project I no has longitudinal data
+# NO TERM
+no.term = meta[which(meta$project == 'False' & meta$project != 'I'),] # project I no has longitudinal data
+no.term = no.term[which(no.term$collect_wk >= 20 & no.term$collect_wk <= 32),] # Select samples collected beetween 25 -30 weeks  
+participants = names(which(table(no.term$participant_id) > 2)) # Select visits of preterm participants with more than 2 visits 
+ex.participants = names(which(table(no.term$participant_id)>= 2))# Select visits of preterm participants with equal or less than 2 visits 
 
-# Select visits of preterm participants with more than 2 visits 
-participants = names(which(table(no.term$participant_id) > 2))
+
 visits = list()
 for (i in seq_along(participants)) {
   visits[[i]] = meta[which(meta$participant_id == participants[i]), ]$specimen
 }
 names(visits) = participants
 head(visits)
-
+sum(lengths(visits))
 # species taxonomic data with relative abundance
 tax = read.csv('extdata/taxonomy/taxonomy_relabd.species.csv', header = T, row.names = 1)
 tax[1:5, 1:5]
 
 
 # calculate correlation between species and collect_wk
-j = 1
+collect.l = list()
+tax.d.l =list()
 corrs = list()
 for (j in seq_along(visits)) {
   
@@ -30,19 +35,69 @@ for (j in seq_along(visits)) {
   res = res[which(abs(res) > 0.5)]               # select only those species with abs(corr) > 0.5
   
   corrs[[j]] = res
+  collect.l[[j]] = collect
+  tax.d.l[[j]] = tax.d
   print(paste0('Calculated corr for: ', names(visits)[j]))
 }
 names(corrs) = names(visits)
-
+names(collect.l) = names(visits)
+names(tax.d.l) = names(visits)
 
 hist(unlist(corrs), 100)
 lapply(corrs, function(x) length(x))
 
 
 species = substr(names((unlist(corrs))), 8, 300)
-table(species)[which(table(species) > 10)]
+species.no_term = table(species)[which(table(species) > 10)]
+names(species.no_term)
+plot(collect.l$A00008, tax.d.l$A00008$Fenollaria.massiliensis)
 
+# TERM
+term = meta[which(meta$was_term == 'True' & meta$project != 'I'),] # project I no has longitudinal data
+term = term[which(term$collect_wk >= 20 & term$collect_wk <= 32),] 
+participants = names(which(table(term$participant_id) > 2)) # Select visits of preterm participants with more than 2 visits 
+ex.participants = names(which(table(term$participant_id)>= 2))# Select visits of preterm participants with equal or less than 2 visits 
 
+visits = list()
+for (i in seq_along(participants)) {
+  visits[[i]] = meta[which(meta$participant_id == participants[i]), ]$specimen
+}
+names(visits) = participants
+head(visits)
+sum(lengths(visits))
+# calculate correlation between species and collect_wk
+collect.l = list()
+tax.d.l =list()
+corrs = list()
+for (j in seq_along(visits)) {
+  
+  collect = meta[which(meta$participant_id == names(visits)[j]), ]$collect_wk
+  tax.d = tax[match(visits[[j]], rownames(tax)),]
+  res = apply(tax.d, 2, function(x) cor(x, collect))
+  res = na.omit(res)
+  res = res[order(abs(res), decreasing = T)]
+  
+  res = res[which(abs(res) > 0.5)]               # select only those species with abs(corr) > 0.5
+  
+  corrs[[j]] = res
+  collect.l[[j]] = collect
+  tax.d.l[[j]] = tax.d
+  print(paste0('Calculated corr for: ', names(visits)[j]))
+}
+names(corrs) = names(visits)
+names(collect.l) = names(visits)
+names(tax.d.l) = names(visits)
 
+hist(unlist(corrs), 100)
+lapply(corrs, function(x) length(x))
 
-plot(collect, tax.d$Ureaplasma)
+species = substr(names((unlist(corrs))), 8, 300)
+species.term = table(species)[which(table(species) > 10)]
+names(species.term)
+plot(collect.l$A00011, tax.d.l$A00011$Ureaplasma)
+
+#Spps
+shared = intersect(x= names(species.no_term), y = names(species.term))
+only.no_term = setdiff(x = names(species.no_term), y = names(species.term))
+only.term = setdiff(x = names(species.term), y = names(species.no_term))
+all.spp = union(x = names(species.no_term), y = names(species.term))

@@ -117,7 +117,7 @@ show.pca.Density = function(dataset, batch = "batch", cond = "target", taxons, m
     pca.data <- dataset[taxons]
   }
   # PCA and Plot
-  pca.res<- mixOmics::pca(pca.data, ncomp = 3, center = TRUE, scale = FALSE)
+  pca.res<- mixOmics::pca(pca.data, ncomp = 3, center = TRUE, scale = TRUE)
   batch.t <- dataset[, batch] # Batch data
   target.t  <- dataset[,cond] # Target data
   Scatter.Density(object = pca.res, batch = batch.t, trt = target.t,
@@ -138,7 +138,7 @@ show.pca.3D = function(dataset, batch = "batch", cond = "target", taxons, make_l
   dd = cbind(pca.data, batch.t, target.t)
   pca.re <- stats::prcomp(pca.data,
                           center = TRUE,
-                          scale. = FALSE, rank. = 3)
+                          scale. = TRUE, rank. = 3)
   #Plot
   components <- pca.re[["x"]]
   components <- data.frame(components)
@@ -243,7 +243,7 @@ term = meta %>% dplyr::select(project, specimen, was_term)
 #####
 ## 1.1. Species level
 # Taxonomy
-tax_spe = read.csv('extdata/taxonomy/taxonomy_nreads.species.csv', header = T)
+tax_spe = read.csv('extdata/taxonomy/taxonomy_relabd.species.csv', header = T)
 ## prefiltering step to remove OTUs for which the sum of counts are below a set
 ## threshold (0.01%) compared to the total sum of all counts
 ##  Separate the OPTUs from the specimen ID in order to filter OTUs
@@ -257,8 +257,8 @@ tax_spe <- tax_spe[, cols]
 
 ## As we have the OTUs separated we apply a CLR transformation
 library(mixOmics)
-#tax_spe <- tax_spe + 1
-#tax_spe <- logratio.transfo(tax_spe, logratio = 'CLR')
+tax_spe <- tax_spe + 0.1
+tax_spe <- logratio.transfo(tax_spe, logratio = 'CLR')
 class(tax_spe) <- 'matrix'
 ## Recover the previously removed specimen IDs
 tax_spe = cbind(var, tax_spe)
@@ -289,7 +289,7 @@ show.pca.3D(dataset = bigbox_term_spe, batch = "project",
 ### 1.1.2. Box plots, Density plots and Linear Models
 library(PLSDAbatch)
 dd <- data.frame(value = bigbox_term_spe[,names(var.ordenado[1])], batch = bigbox_term_spe$project)
-box_plot(df = dd,color.set = my_palette, title = names(var.ordenado[3]),ylab = "", batch.legend.title = 'Project (batch)')
+box_plot(df = dd,color.set = my_palette, title = names(var.ordenado[1]),ylab = "", batch.legend.title = 'Project (batch)')
 
 ggplot(dd, aes(x = value, fill = batch)) + 
   geom_density(alpha = 1) + scale_fill_manual(values = my_palette) + 
@@ -324,7 +324,7 @@ resnumclust2<-NbClust(bigbox_term_spe[names(var.ordenado[1:20])],
                       distance = "euclidean", min.nc=2, max.nc=10,
                       method = "kmeans", index = "alllong")
 fviz_nbclust(resnumclust2)
-clusters = make.cluster(dataset = bigbox_term_spe, k = 7,batch = "project", cond = "was_term", taxons = names(var.ordenado[1:200]) )
+clusters = make.cluster(dataset = bigbox_term_spe, k = 2,batch = "project", cond = "was_term", taxons = names(var.ordenado[1:200]) )
 clusters$plot
 ### 1.1.5. Accounting Batch Effect
 ### Linear model
@@ -361,17 +361,77 @@ spe.sva.trt_adjp <- p.adjust(spe.sva.trt_p, method='fdr')
 
 ### 1.1.6. Correcting for batch effects
 ### SVA
+library(sva)
 spe.combat.sva <- t(ComBat(t(bigbox_term_spe[names(var.ordenado[1:200])]), batch = spe.batch, 
                            mod = spe.mod, par.prior = F, prior.plots = F))
 ### LIMMA
+library(limma)
 spe.combat.limma <- t(removeBatchEffect(t(bigbox_term_spe[names(var.ordenado[1:200])]), batch = spe.batch, 
                                         design = spe.mod))
 cols <- sapply(bigbox_term_spe, is.character)
 vars  = bigbox_term_spe[cols]
-k  = bigbox_term_spe[cols] 
+identical(rownames(spe.combat.limma), rownames(vars))
 k = cbind(spe.combat.limma, vars)
-show.pca.3D(dataset = k, batch = "project", cond = "was_term",taxons = names(var.ordenado[1:200]))
+show.pca.v1(dataset = k, batch = "project", cond = "was_term",taxons = names(var.ordenado[1:200]))
 
+### Percentile Normalisation
+tax_spe = read.csv('extdata/taxonomy/taxonomy_relabd.species.csv', header = T)
+dim(tax_spe)
+cols <- sapply(tax_spe, is.numeric)
+var <- sapply(tax_spe, is.character)
+var = tax_spe[var]
+cols = tax_spe[cols]
+cols <- which(colSums(cols)*100/(sum(colSums(cols))) > 0.01)
+tax_spe <- tax_spe[, cols]
+tax_spe = cbind(var, tax_spe)
+bigbox_term_spe = merge(term, tax_spe)
+rownames(bigbox_term_spe) <- bigbox_term_spe[,1]
+bigbox_term_spe <- bigbox_term_spe[,-1]
+cols <- sapply(bigbox_term_spe, is.numeric)
+vars = c("project", "was_term")
+m = bigbox_term_spe[vars]
+dd = as.matrix(m)
+spe.batch = dd[,-2]
+spe.target = dd [,-1]
+spe.batch = as.factor(spe.batch)
+spe.target = as.factor(spe.target)
+percentile.data <- t(apply(bigbox_term_spe[names(var.ordenado[1:200])]+0.01, 1, function(x){x/sum(x)}))
+spe.percentile <- percentile_norm(data = percentile.data, batch = spe.batch, 
+                                 trt = spe.target, ctrl.grp = "True")
+identical(rownames(spe.percentile), names(spe.target))
+spe.percentile = cbind(spe.batch, spe.target, spe.percentile)
+show.pca.v1(dataset =spe.percentile, batch = "spe.batch", cond = "spe.target",
+            taxons = names(spe.percentile[sapply(spe.percentile, is.numeric)]))
+
+### MMUPHin
+library(MMUPHin)
+library(magrittr)
+library(dplyr)
+library(ggplot2)
+bigbox_term_spe = merge(term, tax_spe)
+rownames(bigbox_term_spe) <- bigbox_term_spe[,1]
+bigbox_term_spe <- bigbox_term_spe[,-1]
+target = bigbox_term_spe$was_term
+batch = bigbox_term_spe$project
+meta = data.frame(study = as.factor(bigbox_term_spe$project),
+                  target = bigbox_term_spe$was_term)
+rownames(meta) = rownames(bigbox_term_spe)
+
+cols <- sapply(bigbox_term_spe, is.numeric)
+m = as.matrix(bigbox_term_spe[cols])
+df = data.frame(percentile.data)
+fit_adjust_batch <- adjust_batch(feature_abd = t(df),
+                                 batch = "study",
+                                 covariates = "target",
+                                 data = meta,
+                                 control = list(verbose = FALSE))
+mmupih.data <- fit_adjust_batch$feature_abd_adj
+mat = as.data.frame(t(mmupih.data))
+spe.mmupih = as.data.frame(cbind(target, batch, mat ))
+show.pca.v1(dataset =spe.mmupih, batch = "batch", cond = "target",
+            taxons = names(spe.percentile[names(var.ordenado[1:200])]))
+# One way to evaluate the effect of batch adjustment is to assess the total variability in microbial
+# profiles attributable to study differences, before and after adjustment
 
 #####
 # rm(list = ls()[!ls() %in% c( "Scatter.Density","my_palette")])# CLEAN ENVIROMENT
@@ -380,7 +440,7 @@ show.pca.3D(dataset = k, batch = "project", cond = "was_term",taxons = names(var
 #####
 ## 1.2. Genus level
 # Taxonomy
-tax_gen = read.csv('extdata/taxonomy/taxonomy_nreads.genus.csv', header = T)
+tax_gen = read.csv('extdata/taxonomy/taxonomy_relabd.genus.csv', header = T)
 ## prefiltering step to remove OTUs for which the sum of counts are below a set
 ## threshold (0.01%) compared to the total sum of all counts
 ##  Separate the OPTUs from the specimen ID in order to filter OTUs
