@@ -1,15 +1,27 @@
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 # Arguments
+phylotypes = T
+deep = '1e0'      # 1e_1 1e0 5e_1
 counts = 'relabd' # relabd nreads
-level = 'species' # species genus family
-nreps = 10        # min number of patients with tax corr > 0.5
+level = 'genus'   # species genus family
+nreps = 15        # min number of patients with tax corr > 0.5
 
 # Load data
 meta = read.csv('../../extdata/metadata/metadata.csv', header = T)
-tax = read.csv(paste0('../../extdata/taxonomy/taxonomy_', counts, '.', level, '.csv'), header = T, row.names = 1)
+if (phylotypes == T) {
+  tax = read.csv(paste0('../../extdata/phylotypes/phylotype_', 
+                        counts, '.', deep, '.csv'), 
+                 header = T, row.names = 1)
+} else{
+  tax = read.csv(paste0('../../extdata/taxonomy/taxonomy_',
+                        counts, '.', level, '.csv'), 
+                 header = T, row.names = 1)
+}
+
 
 # NO TERM
+# =================
 no.term = meta[which(meta$was_term == 'False' & meta$project != 'I'),]            # project I no has longitudinal data
 # no.term = no.term[which(no.term$collect_wk >= 20 & no.term$collect_wk <= 32),]    # Select samples collected beetween 25 -30 weeks
 participants = names(which(table(no.term$participant_id) > 2))                    # Select visits of preterm participants with more than 2 visits 
@@ -56,7 +68,11 @@ species.no_term = table(species)[which(table(species) > nreps)]
 # names(species.no_term)
 # plot(collect.l$A00008, tax.d.l$A00008$Fenollaria.massiliensis)
 
+
+
+
 # TERM
+# =================
 term = meta[which(meta$was_term == 'True' & meta$project != 'I'),] # project I no has longitudinal data
 # term = term[which(term$collect_wk >= 20 & term$collect_wk <= 32),] 
 participants = names(which(table(term$participant_id) > 2)) # Select visits of preterm participants with more than 2 visits 
