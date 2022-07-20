@@ -1,11 +1,5 @@
-- eliminar pacientes que tengan una sola visita (dos?)
-- usar la abundancia relativa para calcular lo siguiente:
-- identificar los bichos más correlacionados con el collect_week en pacientes pretérmino
-- identificar los bichos más correlacionados con el collect_week en pacientes término
-- hacer intersect entre ambos vectores, y quedarse únicamente los que aparezcan en el pretérmino y no en término
-- quedarnos con aquellos donde la diferencia se observe principalmente entre las semanas 25-30 aprox 
-- el modelo como base tendrá la expresión de esos bichos y la variable collect_week
-- a partir de ahí ir añadiendo otro tipo de variables como alpha/beta diversity, etc.
-
-
-# 
+1. Sacar bichos por cohorte mediante FS longitudinal
+2. Sacar bichos por cohort mediante expresion diferencial
+3. Seleccionar cohortes para entrenamiento
+4. Ver variables clínicas asociadas al pretérmino
+5. Añadir subgrupo grande de variables y correr feature selection (fcbf, ¿wrapper?)
