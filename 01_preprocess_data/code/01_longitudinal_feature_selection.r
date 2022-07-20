@@ -2,13 +2,12 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 outDir = '../../01_preprocess_data/data/feature_selection/'
 
 # Arguments
-phylotypes = F
-deep = '1e0'      # 1e_1 1e0 5e_1
+phylotypes = T
+deep = '5e_1'      # 1e_1 1e0 5e_1
 counts = 'relabd' # relabd nreads
-level = 'species' # species genus family
-nreps = 20        # min number of patients with tax corr > 0.5
+level = 'family' # species genus family
+nreps = 0.2       # percentage of patients with feature corr > corr
 corr = 0.5        # min abs correlation value 
-pvalue = 0.05
 
 # Load data
 meta = read.csv('../../extdata/metadata/metadata.csv', header = T)
@@ -38,7 +37,7 @@ for (i in seq_along(participants)) {
   visits[[i]] = meta[which(meta$participant_id == participants[i]), ]$specimen
 }
 names(visits) = participants
-saveRDS(visits, file = '../../01_preprocess_data/data/visits_of_noterms.rds')
+# saveRDS(visits, file = '../../01_preprocess_data/data/visits_of_noterms.rds')
 
 
 # calculate correlation between species and collect_wk
@@ -64,7 +63,7 @@ names(corrs.noterm) = names(visits)
 
 
 species = substr(names((unlist(corrs.noterm))), 8, 300)
-species.no_term = table(species)[which(table(species) > nreps)]
+species.no_term = table(species)[which(table(species) > nreps * length(visits))]
 # names(species.no_term)
 # plot(collect.l$A00008, tax.d.l$A00008$Fenollaria.massiliensis)
 
@@ -107,7 +106,7 @@ names(corrs.term) = names(visits)
 # lapply(corrs, function(x) length(x))
 
 species = substr(names((unlist(corrs.term))), 8, 300)
-species.term = table(species)[which(table(species) > nreps)]
+species.term = table(species)[which(table(species) > nreps * length(visits))]
 # names(species.term)
 # plot(collect.l$A00011, tax.d.l$A00011$)
 

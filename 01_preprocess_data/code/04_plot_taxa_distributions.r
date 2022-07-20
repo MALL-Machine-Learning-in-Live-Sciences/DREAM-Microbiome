@@ -2,24 +2,55 @@
 # =========================================
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
+
 # Load data
-meta = read.csv('../../extdata/metadata/metadata.csv', 
-                header = T)
-tax = read.csv('../../extdata/taxonomy/taxonomy_relabd.species.csv',
-               header = T, row.names = 1)
+# Arguments
+phylotypes = F
+deep = '1e_1'      # 1e_1 1e0 5e_1
+counts = 'relabd' # relabd nreads
+level = 'species' # species genus family
+
+# Load data
+meta = read.csv('../../extdata/metadata/metadata.csv', header = T)
+if (phylotypes == T) {
+  tax = read.csv(paste0('../../extdata/phylotypes/phylotype_', 
+                        counts, '.', deep, '.csv'), 
+                 header = T, row.names = 1)
+  features = readRDS(paste0('../../01_preprocess_data/data/feature_selection/phylotypes_',
+                            deep, '.rds'))
+  filename = paste0('phylotypes_', deep, '.pdf')
+} else{
+  tax = read.csv(paste0('../../extdata/taxonomy/taxonomy_',
+                        counts, '.', level, '.csv'), 
+                 header = T, row.names = 1)
+  features = readRDS(paste0('../../01_preprocess_data/data/feature_selection/taxonomy_',
+                            counts, '_', level, '.rds'))
+  filename = paste0('taxonomy_', counts, '_', level, '.pdf')
+}
+
+outPath = '~/git/DREAM-Microbiome/01_preprocess_data/plots/'
 v.nt = readRDS('../../01_preprocess_data/data/visits_of_noterms.rds')
 v.t = readRDS('../../01_preprocess_data/data/visits_of_terms.rds')
 
+names = c(rep('shared', length(features$shared)),
+          rep('no_term', length(features$no_term)),
+          rep('term', length(features$term)))
 
-features = readRDS('../../01_preprocess_data/data/feature_selection/taxonomy_relabd_species.rds')
-features = features$term
+features = c(features$shared, features$no_term, features$term)
+names(features) = names
 
-# Atopobium vaginae
+
+tax = alpha
+features = names(alpha)
+names(features) = rep('Alpha Diversity', length(features))
+
+
+# Plot features
 # =====
 res = list()
-for (feat in features) {
+for (feat in seq_along(features)) {
 
-  bicho = feat
+  bicho = features[feat]
   
   toPlot_noterm = list()
   for (i in names(v.nt)) {
@@ -35,6 +66,7 @@ for (feat in features) {
       abundance = abundance,
       weeks = as.numeric(weeks),
       bicho = bicho,
+      features = names(bicho),
       term = 'No-term'
     )
     # print(plot(weeks,
@@ -60,6 +92,7 @@ for (feat in features) {
       abundance = abundance,
       weeks = as.numeric(weeks),
       bicho = bicho,
+      features = names(bicho),
       term = 'Term'
     )
     # print(plot(weeks,
@@ -86,11 +119,18 @@ ggplot(data = res,
            y = abundance, 
            group = interaction(as.factor(id), as.factor(term)),
            color = as.factor(term))) +
-  facet_wrap(~bicho) +
+  facet_wrap(bicho ~ features, scales = 'free_y') +
   geom_line() +
   xlim(10,32) +
   theme(legend.title = element_blank())
 
+
+# ggsave(filename = filename,
+#        path = outPath,
+#        device = 'pdf',
+#        width = 20, 
+#        height = 20, 
+#        dpi = 'retina')
 
 
 
