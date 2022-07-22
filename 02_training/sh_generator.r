@@ -11,7 +11,7 @@ for (i in 1:length(input.paths)) {
     
     exec.dir = '02_training/Exec/'
     outslurm.dir = '02_training/outs/'
-    
+
     if (dir.exists(exec.dir) == FALSE) {
       dir.create(exec.dir)
       message('Creating directory --Exec-- ...')
@@ -26,10 +26,7 @@ for (i in 1:length(input.paths)) {
     cat(paste("#SBATCH", "--qos", qos, '\n'))
     cat(paste("#SBATCH", "-t", time, '\n'))
     cat(paste("#SBATCH", "-N", nodes, '\n'))
-    cat(paste("#SBATCH", "-n", ntasks, '\n'))
-
-    cat(paste("#SBATCH", "--error", outslurm.dir, '\n')) 
-    cat(paste("#SBATCH", "--output", outslurm.dir, '\n'))    
+    cat(paste("#SBATCH", "-n", ntasks, '\n'))    
     
     cat("module load cesga/2018 gcc/6.4.0 R/4.0.2", '\n')
     
