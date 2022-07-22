@@ -5,7 +5,7 @@ setwd('/mnt/netapp2/Store_uni/home/ulc/co/jlb/git/DREAM-Microbiome/')
 
 # Arguments
 ExperimentName = 'first-experiment'
-input.dir.path = '02_training/toRun/first_experiment/'
+input.dir.path = '02_training/toRun/'
 out.dir.path = '02_training/results/'
 
 path.algs = '02_training/models/'

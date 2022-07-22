@@ -4,13 +4,11 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 outDir = '../../02_training/toRun/'
 
 # Arguments
-phylotypes = T
-deep = '1e_1'      # 1e_1 1e0 5e_1
+phylotypes = F
+deep = '5e_1'      # 1e_1 1e0 5e_1
 counts = 'relabd' # relabd nreads
-level = 'family' # species genus family
-nreps = 0.2       # percentage of patients with feature corr > corr
-corr = 0.5        # min abs correlation value 
-early = 32        # 28 32
+level = 'species' # species genus family
+early = 28        # 28 32
 
 # Load data
 meta = read.csv('../../extdata/metadata/metadata.csv', header = T)
@@ -37,8 +35,8 @@ if (phylotypes == T) {
            counts, '_', level, '.rds'))$all
   de.feats = readRDS(
     paste0('../../01_preprocess_data/data/feature_selection/taxonomy_',
-           counts, '_', level, '_', early, '.rds'))
-  outPath = paste0('taxonomy_', counts, '_', level, '.rds')
+           level, '_', early, '.rds'))
+  outPath = paste0('taxonomy_', counts, '_', level, '_', early, '.rds')
 }
 
 
@@ -64,6 +62,13 @@ res = data.frame(
   tax,
   row.names = meta$specimen
 )
+
+res = fastDummies::dummy_cols(res, 
+                        select_columns = 'NIH.Racial.Category',
+                        remove_first_dummy = F,
+                        remove_selected_columns = T)
+res = res[, -grep('NIH.Racial.Category_Unknown', colnames(res))]
+
 outPath = paste0(outDir, outPath)
 rm(list = setdiff(ls(), c("res", "early", "outPath")))
 

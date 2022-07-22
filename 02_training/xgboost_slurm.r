@@ -7,8 +7,8 @@ xgboost.bmr.slurm =function(data, name, path = '', filename = '', cv.inner, cv.o
   print('Removing Constant Features')
   task = removeConstantFeatures(task)
   
-  #print('Normalizing Features')
-  #task = normalizeFeatures(task)
+  print('Normalizing Features')
+  task = normalizeFeatures(task)
   
   print('Select Hyperparameters')
   

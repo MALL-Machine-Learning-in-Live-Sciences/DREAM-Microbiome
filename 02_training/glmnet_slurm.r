@@ -7,8 +7,8 @@ glmnet.bmr.slurm = function(data, set.seed, name, path = '', filename = '', cv.i
   print('Removing Constant Features')
   task = removeConstantFeatures(task)
   
-  #print('Normalizing Features')
-  #task = normalizeFeatures(task)
+  print('Normalizing Features')
+  task = normalizeFeatures(task)
   
   print('Select Hyperparameters')
   
