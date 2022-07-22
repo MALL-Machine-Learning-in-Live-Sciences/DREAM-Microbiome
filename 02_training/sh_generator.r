@@ -1,5 +1,5 @@
 setwd('/mnt/netapp2/Store_uni/home/ulc/co/jlb/git/DREAM-Microbiome/')
-source('config_file.r')
+source('02_training/config_file.r')
 
 # Execute in parallel from Cesga
 input.paths = dir(path = input.dir.path)
@@ -26,7 +26,7 @@ for (i in 1:length(input.paths)) {
     cat(paste("#SBATCH", "-N", nodes, '\n'))
     cat(paste("#SBATCH", "-n", ntasks, '\n'))
     
-    cat("module load cesga/2018 gcc/6.4.0 R/3.5.3", '\n')
+    cat("module load cesga/2018 gcc/6.4.0 R/4.0.2", '\n')
     
     cat(paste("name=", input.paths[i], '\n', sep = ''))
     cat(paste("data=", input.dir.path, input.paths[i], '\n', sep = ''))
