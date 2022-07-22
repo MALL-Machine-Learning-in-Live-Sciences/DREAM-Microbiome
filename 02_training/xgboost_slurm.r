@@ -39,7 +39,7 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
   if (cv.outer == 'CV') {
     outer = makeResampleDesc(method = 'CV', predict = 'both', iters = 10, stratify = TRUE)
   } else if (cv.outer == 'RepCV'){
-    outer = makeResampleDesc(method = 'RepCV', predict = 'both', reps = 50, folds = 3, stratify = TRUE)
+    outer = makeResampleDesc(method = 'RepCV', predict = 'both', reps = 50, folds = 10, stratify = TRUE)
   } else if (cv.outer == 'Holdout'){
     outer = makeResampleDesc(method = 'Holdout', predict = 'both', stratify = TRUE)
   } else{
@@ -57,7 +57,7 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
     parallelStartMulticore(20L , level = 'mlr.tuneParams')
   }
   # Benchmarking
-  bmr = benchmark(lrn_xgboost, task , outer , measures =  list(acc, mmce) , show.info = T , models = T)
+  bmr = benchmark(lrn_xgboost, task , outer , measures =  list(auc, acc, mmce) , show.info = T , models = T)
   
   saveRDS(bmr, file = paste(out.path, name, '_', ncol(data)-1, '_', out.filename.xgboost, sep = ''))
   

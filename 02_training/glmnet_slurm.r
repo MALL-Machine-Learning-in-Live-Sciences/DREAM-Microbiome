@@ -18,7 +18,7 @@ glmnet.bmr.slurm = function(data, set.seed, name, path = '', filename = '', cv.i
   if (cv.inner == 'CV') {
     inner = makeResampleDesc(method = 'CV', predict = 'both', iters = 10, stratify = TRUE)
   } else if (cv.inner == 'RepCV'){
-    inner = makeResampleDesc(method = 'RepCV', predict = 'both', reps = 50, folds = 3, stratify = TRUE)
+    inner = makeResampleDesc(method = 'RepCV', predict = 'both', reps = 50, folds = 10, stratify = TRUE)
   } else{
     inner = makeResampleDesc(method = 'Holdout', predict = 'both', stratify = TRUE)
   }
@@ -37,7 +37,7 @@ glmnet.bmr.slurm = function(data, set.seed, name, path = '', filename = '', cv.i
   if (cv.outer == 'CV') {
     outer = makeResampleDesc(method = 'CV', predict = 'both', iters = 10, stratify = TRUE)
   } else if (cv.outer == 'RepCV'){
-    outer = makeResampleDesc(method = 'RepCV', predict = 'both', reps = 50, folds = 3, stratify = TRUE)
+    outer = makeResampleDesc(method = 'RepCV', predict = 'both', reps = 50, folds = 10, stratify = TRUE)
   } else if (cv.outer == 'Holdout'){
     outer = makeResampleDesc(method = 'Holdout', predict = 'both', stratify = TRUE)
   } else{
@@ -57,7 +57,7 @@ glmnet.bmr.slurm = function(data, set.seed, name, path = '', filename = '', cv.i
   }
   
   # Benchmarking
-  bmr = benchmark(lrn_glmnet, task , outer , measures =  list(acc, mmce) , show.info = T , models = T)
+  bmr = benchmark(lrn_glmnet, task , outer , measures =  list(auc, acc, mmce) , show.info = T , models = T)
   
   saveRDS(bmr, file = paste(out.path, name, '_', ncol(data)-1, '_', out.filename.glmnet, sep = ''))
   
