@@ -8,7 +8,7 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 phylotypes = F
 deep = '1e_1'      # 1e_1 1e0 5e_1
 counts = 'relabd' # relabd nreads
-level = 'species' # species genus family
+level = 'genus' # species genus family
 
 # Load data
 meta = read.csv('../../extdata/metadata/metadata.csv', header = T)
@@ -40,9 +40,9 @@ features = c(features$shared, features$no_term, features$term)
 names(features) = names
 
 
-tax = alpha
-features = names(alpha)
-names(features) = rep('Alpha Diversity', length(features))
+# tax = alpha
+# features = names(alpha)
+# names(features) = rep('Alpha Diversity', length(features))
 
 
 # Plot features

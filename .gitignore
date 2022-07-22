@@ -7,5 +7,6 @@ plots/*.jpeg
 02_training/Exec/
 02_training/results/
 02_training/toRun/
+02_training/toRun/first_experiment/
 01_preprocess_data/data/
 01_preprocess_data/plots/
