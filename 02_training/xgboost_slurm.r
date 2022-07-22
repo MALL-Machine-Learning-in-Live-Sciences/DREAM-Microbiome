@@ -1,4 +1,4 @@
-xgboost.bmr.slurm =function(data, name, path = '', filename = '', cv.inner, cv.outer,
+xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.outer,
                             booster, eta, xg.lambda, max_depth, eval_metric){
   require(mlr)
   print('Making task')
