@@ -11,9 +11,9 @@ out.dir.path = '02_training/results/'
 path.algs = '02_training/models/'
 pattern.algs = '_train.r'
 
-part = 'shared'
-qos = 'shared_short'
-time = '02:00:00'
+part = 'cola-corta'
+qos = 'default'
+time = '10:00:00'
 nodes = 1
 ntasks = 20
 
