@@ -20,3 +20,4 @@ plots/*.jpeg
 01_preprocess_data/data/MetaA
 01_preprocess_data/data/feature_selection
 01_preprocess_data/plots/
+00_exploratory_analysis/plots

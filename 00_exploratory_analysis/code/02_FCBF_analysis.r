@@ -128,3 +128,59 @@ UpSet(m2,comb_order = order(comb_size(m2),decreasing = TRUE),
       comb_col = viridis( length(comb_degree(m2)))
       )
 
+
+
+#Upset plots with dfs all28 y all32 from exact visits
+table(all28$collect_week)
+table(all32$collect_week)
+
+projects = as.data.frame(big_box$project)
+rownames(projects) = rownames(big_box)
+
+pr.28 = as.data.frame(projects[rownames(all28),])
+project = pr.28$`projects[rownames(all28), ]`
+all28 = as.data.frame(cbind(all28, project))
+
+pr.32 = as.data.frame(projects[rownames(all32),])
+project = pr.32$`projects[rownames(all32), ]`
+all32 = as.data.frame(cbind(all32, project))
+
+l.a28 = list()
+l.a32 = list()
+
+for (i in seq_along(1:length(table(all28$project)))){
+  # Early Preterm
+  da28 = all28[which(all28$project == names(table(all28$project))[i]),]
+  da28$project <- NULL
+  features = FCBF.FS(data = da28, thold = thold)
+  l.a28[[i]] = features
+  
+  # Preterm
+  da32 = all32[which(all32$project == names(table(all32$project))[i]),]
+  da32$project <- NULL
+  features = FCBF.FS(data = da32, thold = thold)
+  l.a32[[i]] = features
+}
+names(l.a28) = names(table(all28$project))
+names(l.a32) = names(table(all28$project))
+
+# Upset plot
+#Panel1
+library(UpSetR)
+library(ComplexHeatmap)
+library(viridis)
+library(ggplot2)
+library(ggpubr)
+
+m3 = make_comb_mat(fromList(l.a28))
+m4 = make_comb_mat(fromList(l.a32))
+
+UpSet(m3,comb_order = order(comb_size(m3),
+                            decreasing = TRUE),
+      comb_col = viridis( length(comb_degree(m3)))
+)
+
+UpSet(m4,comb_order = order(comb_size(m4),decreasing = TRUE),
+      comb_col = viridis( length(comb_degree(m4)))
+)
+

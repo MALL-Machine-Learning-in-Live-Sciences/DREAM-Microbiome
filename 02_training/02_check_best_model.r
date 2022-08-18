@@ -1,3 +1,4 @@
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 # Give desired becnhmark and know best iter
 bch = readRDS("results/first-experiment/taxonomy_relabd_species_32_glmnet.rds")
