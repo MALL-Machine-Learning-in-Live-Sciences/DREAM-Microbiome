@@ -24,13 +24,13 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
   }
   # Hyperparameter Tuning
   psxGB<-makeParamSet(
-    makeDiscreteParam("booster", values = booster),
-    makeNumericParam("eta",lower = eta[1], upper = eta[2] ),
-    makeNumericLearnerParam("lambda", lower =xg.lambda[1], upper =xg.lambda[2]),
-    makeIntegerParam("max_depth", lower =max_depth[1], upper = max_depth[2]),
+    makeDiscreteLearnerParam("booster", values = booster),
+    makeDiscreteLearnerParam("eta", values = eta),
+    makeDiscreteLearnerParam("lambda", values = xg.lambda),
+    makeDiscreteLearnerParam("max_depth", values = max_depth),
     makeDiscreteParam("eval_metric", eval_metric)
   )
-  l = makeLearner("classif.xgboost", predict.type = "prob", nrounds=10) #nrounds --> no me acuerdo que era excactamente. Es a la hora de cosntruir el learner no lo metro como hiperparametro
+  l = makeLearner("classif.xgboost", predict.type = "prob")
   lrn_xgboost<-makeTuneWrapper(l,  resampling = inner, par.set = psxGB, measures = acc, control=ctrl,  show.info = T)
   
   print('Select outer resampling')
@@ -51,10 +51,10 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
     message('Installing packages...')
     install.packages('parallelMap')
     library(parallelMap)
-    parallelStartMulticore(20L , level = 'mlr.tuneParams')
+    parallelStartMulticore(48L, level = 'mlr.tuneParams')
   } else {
     library(parallelMap)
-    parallelStartMulticore(20L , level = 'mlr.tuneParams')
+    parallelStartMulticore(48L, level = 'mlr.tuneParams')
   }
   # Benchmarking
   bmr = benchmark(lrn_xgboost, task , outer , measures =  list(auc, acc, mmce) , show.info = T , models = T)

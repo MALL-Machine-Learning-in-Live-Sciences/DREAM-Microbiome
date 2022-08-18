@@ -35,7 +35,8 @@ get.data = function(outDir, phylotypes, deep, counts, level, early){
   
   # Unique
   # ===
-  features = unique(long.feats, de.feats)
+  #features = unique(long.feats, de.feats)# Se queda solo con las del primer vector
+  features = unique(c(long.feats, de.feats)) # Primero sumo ambas en un vector y despué hago el unique
   
   tax = tax[,match(features, colnames(tax))]
   
@@ -156,8 +157,8 @@ data28 = list()
 # i = 1
 for (i in seq_along(files28)) {
   
-  data32[[i]] = readRDS(paste0('../../02_training/toRun/', files28[i]))
-  data32[[i]] = subset(data28[[i]], select = -c(score, phylo_entropy, collect_week,
+  data28[[i]] = readRDS(paste0('../../02_training/toRun/', files28[i]))
+  data28[[i]] = subset(data28[[i]], select = -c(score, phylo_entropy, collect_week,
                                                 NIH.Racial.Category_American.Indian.or.Alaska.Native,
                                                 NIH.Racial.Category_Asian,
                                                 NIH.Racial.Category_Black.or.African.American,
@@ -168,14 +169,14 @@ for (i in seq_along(files28)) {
 
 data28 = as.data.frame(data28)
 cvrts28 = readRDS('../../02_training/toRun/phylotypes_1e_1_28.rds')
-cvrts28 = subset(cvrts32, select = c(score, phylo_entropy, collect_week,
+cvrts28 = subset(cvrts28, select = c(score, phylo_entropy, collect_week,
                                      NIH.Racial.Category_American.Indian.or.Alaska.Native,
                                      NIH.Racial.Category_Asian,
                                      NIH.Racial.Category_Black.or.African.American,
                                      NIH.Racial.Category_Native.Hawaiian.or.Other.Pacific.Islander,
                                      NIH.Racial.Category_White,
                                      target))
-cvrts28 = cbind.data.frame(cvrts32, cvrts28)
+cvrts28 = cbind.data.frame(cvrts28, data28)
 saveRDS(cvrts28, file = '../../02_training/toRun/all_28.rds')
 
 

@@ -23,8 +23,8 @@ for (i in 1:length(input.paths)) {
     cat("#!/bin/bash \n")
     
     cat(paste("#SBATCH", "-p", part, '\n'))
-    cat(paste("#SBATCH", "--qos", qos, '\n'))
     cat(paste("#SBATCH", "-t", time, '\n'))
+    cat(paste("#SBATCH", paste0("--mem=",mem),'\n'))
     cat(paste("#SBATCH", "-N", nodes, '\n'))
     cat(paste("#SBATCH", "-n", ntasks, '\n'))    
     

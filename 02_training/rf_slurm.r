@@ -52,16 +52,14 @@ rf.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.outer
     message('Installing packages...')
     install.packages('parallelMap')
     library(parallelMap)
-    parallelStartMulticore(20L , level = 'mlr.tuneParams')
+    parallelStartMulticore(48L , level = 'mlr.tuneParams')
   } else {
     library(parallelMap)
-    parallelStartMulticore(20L , level = 'mlr.tuneParams')
+    parallelStartMulticore(48L , level = 'mlr.tuneParams')
   }
   
   # Benchmarking
   bmr = benchmark(lrn_rf, task , outer , measures =  list(auc, acc, mmce) , show.info = T , models = T)
   
   saveRDS(bmr, file = paste(out.path, name, '_', ncol(data)-1, '_', out.filename.rf, sep = ''))
-  
-  parallelStop()
 }
