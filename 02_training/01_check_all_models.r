@@ -7,13 +7,13 @@ library(viridis)
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 # Load arguments
-experiment = "results/third-experiment/"  #"results/first-experiment/", "results/second-experiment/",results/third-experiment/"
+experiment = "results/fourth-experiment/"  #"results/first-experiment/", "results/second-experiment/",results/third-experiment/", "fourth-experiment"
 type_load = "iters"                       # bencmark,iters  // If we want load df with iters or whole benchmark
-measure = "Sensitivity"                   # "Accuracy", "AUCROC", "PRAUC","Sensitivity", "Specificity" 
+measure = "Specificity"                   # "Accuracy", "AUCROC", "PRAUC","Sensitivity", "Specificity" 
 alg = "rf"                           # "glmnet", "rf", "xgboost"
-early = 32                                # early preterm = 28, preterm = 32
-all = T                                   # F, T  
-phylotypes = F                            # F, T  
+early = 28                                # early preterm = 28, preterm = 32
+all = F                                   # F, T  
+phylotypes = T                            # F, T  
 deep = '1e0'                              # "1e_1", "1e0", "5e_1"
 level = 'species'                          # "species", "genus", "family"
 
@@ -55,7 +55,7 @@ if (type_load == "iters") {
   # Unlist dfs and merge in a single df for plotting
   dfs2 <- lapply(dfs,function(x) rbind(colnames=colnames(x),x))
   df <- Reduce(function(x,y) merge(x,y,all=T),dfs2)
-  df <- head(df,-1)
+  df = df[!df$task_id == "task_id", ]
   num.cols = c("iteration","Accuracy", "AUCROC", "PRAUC","Sensitivity", "Specificity" )
   df[num.cols] = lapply(df[num.cols], as.numeric)
   
@@ -101,7 +101,9 @@ if (type_load == "iters") {
     theme(plot.title = element_text(hjust = 0.5))
   p2 = change_palette(p = p2, palette = viridis(length(table(df.all$learner_id))))
   print(p2)
-  
+  #View(df.orded[which(df.orded$learner_id == "classif.xgboost.tuned"),])
+  #View(df.orded[which(df.orded$learner_id == "classif.randomForest.tuned"),])
+  #View(df.orded[which(df.orded$learner_id == "classif.glmnet.tuned"),])
   
 }else if(type_load == "bencmark"){
   
