@@ -4,16 +4,18 @@ library(mlr3misc)
 library(mlr3tuning)
 library(mlr3viz)
 library(viridis)
+library(data.table)
+library(purrr)
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 # Load arguments
-experiment = "results/fourth-experiment/"  #"results/first-experiment/", "results/second-experiment/",results/third-experiment/", "fourth-experiment"
+experiment = "results/fifth-experiment/"  #"results/first-experiment/", "results/second-experiment/",results/third-experiment/", "fourth-experiment"
 type_load = "iters"                       # bencmark,iters  // If we want load df with iters or whole benchmark
-measure = "Specificity"                   # "Accuracy", "AUCROC", "PRAUC","Sensitivity", "Specificity" 
+measure = "Sensitivity"                   # "Accuracy", "AUCROC", "PRAUC","Sensitivity", "Specificity" 
 alg = "rf"                           # "glmnet", "rf", "xgboost"
 early = 28                                # early preterm = 28, preterm = 32
-all = F                                   # F, T  
-phylotypes = T                            # F, T  
+all = T                                   # F, T  
+phylotypes = F                            # F, T  
 deep = '1e0'                              # "1e_1", "1e0", "5e_1"
 level = 'species'                          # "species", "genus", "family"
 

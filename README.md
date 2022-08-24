@@ -1,8 +1,8 @@
 # DREAM Challenge - Preterm Birth - Microbiome
 
 ## TODO:
- 1. Benchmarking of batch effects corrections (@Diego)
- 2. Follow ideas pipeline (@Diego)
+ 1. Search for information on key weeks of pregnancy to filter out collect_weeks before those weeks (could be messing with the model)
+ 2. Thinking up new ways to improve performance
  3. Create project and team (@all)
 
 ## Dataset download

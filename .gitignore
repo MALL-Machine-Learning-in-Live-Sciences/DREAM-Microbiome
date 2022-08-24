@@ -13,10 +13,12 @@ plots/*.jpeg
 02_training/results/second-experiment
 02_training/results/third-experiment
 02_training/results/fourth-experiment
+02_training/results/fifth-experiment
 02_training/outs/
 02_training/toRun/
 02_training/toRun/basal/
 02_training/toRun/exact_visits/
+02_training/toRun/exact_visits/more_10_cweek
 01_preprocess_data/data/
 01_preprocess_data/data/MetaA
 01_preprocess_data/data/feature_selection
