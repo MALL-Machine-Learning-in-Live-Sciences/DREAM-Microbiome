@@ -9,11 +9,11 @@ library(purrr)
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 # Load arguments
-experiment = "results/fifth-experiment/"  #"results/first-experiment/", "results/second-experiment/",results/third-experiment/", "fourth-experiment"
-type_load = "iters"                       # bencmark,iters  // If we want load df with iters or whole benchmark
+experiment = "results/sixth-experiment/"  #"results/first-experiment/", "results/second-experiment/",results/third-experiment/", "fourth-experiment"
+type_load = "bencmark"                       # bencmark,iters  // If we want load df with iters or whole benchmark
 measure = "Sensitivity"                   # "Accuracy", "AUCROC", "PRAUC","Sensitivity", "Specificity" 
 alg = "rf"                           # "glmnet", "rf", "xgboost"
-early = 28                                # early preterm = 28, preterm = 32
+early = 32                                # early preterm = 28, preterm = 32
 all = T                                   # F, T  
 phylotypes = F                            # F, T  
 deep = '1e0'                              # "1e_1", "1e0", "5e_1"
@@ -27,7 +27,7 @@ if (type_load == "iters") {
   
   dfs = list()
   if (all == T) {
-    l = list.files(path = experiment, pattern = paste0("df_iter_all_",early ))
+    l = list.files(path = experiment, pattern = paste0("df_iter_all_",early,"_2500" ))
     for (i in seq_along(l)) {
       dfs[[i]] = readRDS(file = paste0(experiment,l[i]))
     }
@@ -238,5 +238,27 @@ z = bch$aggregate(measures)
 print(z)
 
 }
+bch = readRDS("results/sixth-experiment/all_32_2500_rf_rf.rds")
+data = as.data.table(bch)
+outer_learners = map(data$learner, "learner")
+iter = 4
+model = outer_learners[[iter]]
+saveRDS(object = model, file = "bestModels/model_all_32_2500_rf.rds")
+
+
+#all_32 = readRDS("toRun/more_10_cweek/all_32.rds")
+#thold = 0.00025
+#all_32_FCBF = FCBF.FS(data = all_32, thold = thold)
+#saveRDS(object = all_32_FCBF,file = "toRun/features_comparaison/all_32_FCBF.rds")
+#a = df_imp[which(df_imp$imp.total > 5000),]
+#a = c(a$features, "target")
+#all_32_5000_rf = all_32[a]
+#saveRDS(object = all_32_5000_rf,file = "toRun/features_comparaison/all_32_5000_rf.rds")
+#b = df_imp[which(df_imp$imp.total > 2500),]
+#b = c(b$features, "target")
+#all_32_2500_rf = all_32[b]
+#saveRDS(object = all_32_2500_rf,file = "toRun/features_comparaison/all_32_2500_rf.rds")
+
+
 
 

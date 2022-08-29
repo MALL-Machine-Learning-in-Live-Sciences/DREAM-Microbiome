@@ -1,0 +1,14 @@
+
+all_32: iter 184 thold = 0.70
+
+2500_rf: iter 4 thold = 0.70
+
+5000_rf: iter 20 thold = 0.67
+
+5_xgboost: iter 4 thold = 0.71
+
+10_xgboost: iter 114 thold = 0.75
+
+FCBF_rf: iter 332 thold= 0.77
+
+FCBF_xgboost: iter: 168 thold= 0.76

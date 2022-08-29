@@ -2,7 +2,6 @@ extdata/
 .DS_Store
 .Rhistory
 .Rapp.history
-*.pptx
 plots/*.pdf
 plots/*.png
 plots/*.eps
@@ -19,6 +18,7 @@ plots/*.jpeg
 02_training/toRun/basal/
 02_training/toRun/exact_visits/
 02_training/toRun/exact_visits/more_10_cweek
+02_training/bestModels/
 01_preprocess_data/data/
 01_preprocess_data/data/MetaA
 01_preprocess_data/data/feature_selection

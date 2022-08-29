@@ -1,8 +1,8 @@
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 # Give desired becnhmark and know best iter
-bch = readRDS("results/fifth-experiment/all_28_rf.rds")
-iter = 497
+bch = readRDS("results/fifth-experiment/all_32_rf.rds")
+iter = 184
   
 # Retrive cm from best iter
 prediction = bch$resample_results$resample_result[[1]]$predictions()[[iter]]
@@ -14,7 +14,7 @@ prob = data.frame(prediction$data$prob,
                   thold_5 = prediction$data$response,
                   thold_6 =  ifelse(prob$term > 0.6, "term","preterm"),
                   thold_7 =  ifelse(prob$term > 0.7, "term","preterm"),
-                  thold_8 =  ifelse(prob$term > 0.83, "term","preterm"),
+                  thold_8 =  ifelse(prob$term > 0.8, "term","preterm"),
                   thold_9 =  ifelse(prob$term > 0.9, "term","preterm"))
 
 #Import required library
