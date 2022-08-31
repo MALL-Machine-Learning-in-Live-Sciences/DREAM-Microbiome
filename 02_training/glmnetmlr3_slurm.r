@@ -38,18 +38,21 @@ glmnet.bmr.slurm = function(data, set.seed, name, path = '', filename = '', cv.i
   }
 
   # Declare learner and measure
-  learner = lrn("classif.glmnet", predict_type = "prob")
+  learner = lrn("classif.glmnet",
+                predict_type = "prob") %>>% 
+    po("threshold")
+  l = GraphLearner$new(learner)
   measure = msr("classif.prauc")
   
 
   # Hyperparameter Tuning
- psGL = ps(
-  alpha = p_dbl(lower = gl.alpha[1], upper = gl.alpha[2]),
-  s = p_dbl(lower = gl.s[1], upper = gl.s[2]),
-  nlambda = p_int(lower = gl.nlambda, upper= gl.nlambda),
-  lambda.min.ratio = p_dbl(lower = gl.lambda.min.ratio, upper = gl.lambda.min.ratio)
-  
-)
+  psGL = ps(
+    classif.glmnet.alpha = p_dbl(lower = gl.alpha[1], upper = gl.alpha[2]),
+    classif.glmnet.s = p_dbl(lower = gl.s[1], upper = gl.s[2]),
+    classif.glmnet.nlambda = p_int(lower = gl.nlambda, upper= gl.nlambda),
+    classif.glmnet.lambda.min.ratio = p_dbl(lower = gl.lambda.min.ratio, upper = gl.lambda.min.ratio),
+    threshold.thresholds = p_dbl(lower = 0.1, upper = 0.9)
+  )
 
 at = AutoTuner$new(learner = learner, resampling = inner, measure = measure,
                      terminator = terminator, tuner = tuner, search_space = psGL,

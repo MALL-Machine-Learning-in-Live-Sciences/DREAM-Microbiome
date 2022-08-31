@@ -38,18 +38,20 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
   }
   
   # Declare learner  and measure
-  learner = lrn("classif.xgboost", nrounds= 10, predict_type = "prob")
+  learner = lrn("classif.xgboost",
+                predict_type = "prob") %>>% 
+    po("threshold")
+  l = GraphLearner$new(learner)
   measure = msr("classif.prauc")
   
   # Hyperparameter Tuning
   psxGB<-ps(
-    booster = p_fct(levels = xg.booster),
-    alpha = p_dbl(lower = xg.alpha[1], upper = xg.alpha[2]),
-    eta = p_dbl(lower = xg.eta[1], upper = xg.eta[2]),
-    lambda = p_dbl(lower = xg.lambda[1], upper = xg.lambda[2]),
-    gamma = p_dbl(lower = xg.gamma[1], upper = xg.gamma[2]),
-    max_depth = p_int(lower = xg.max_depth[1], upper = xg.max_depth[2])
-    
+    classif.xgboost.booster = p_fct(levels = xg.booster),
+    classif.xgboost.alpha = p_dbl(lower = xg.alpha[1], upper = xg.alpha[2]),
+    classif.xgboost.eta = p_dbl(lower = xg.eta[1], upper = xg.eta[2]),
+    classif.xgboost.lambda = p_dbl(lower = xg.lambda[1], upper = xg.lambda[2]),
+    classif.xgboost.gamma = p_dbl(lower = xg.gamma[1], upper = xg.gamma[2]),
+    classif.xgboost.max_depth = p_int(lower = xg.max_depth[1], upper = xg.max_depth[2])
   )
   at = AutoTuner$new(learner = learner, resampling = inner, measure = measure,
                      terminator = terminator, tuner = tuner, search_space = psxGB,

@@ -6,6 +6,7 @@ plots/*.pdf
 plots/*.png
 plots/*.eps
 plots/*.jpeg
+02_training/data/
 02_training/Exec/
 02_training/results/
 02_training/results/first-experiment
