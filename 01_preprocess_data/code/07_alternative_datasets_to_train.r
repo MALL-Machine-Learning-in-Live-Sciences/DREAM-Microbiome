@@ -29,5 +29,5 @@ for (i in seq_along(files)) {
   d = rbind.data.frame(d, I)
   
   # data[[i]] = d
-  saveRDS(d, file = paste0('../basal_jlb/', files[i]))
+  saveRDS(d, file = paste0('../basal_jlb_v2/', files[i]))
 }

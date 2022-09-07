@@ -4,8 +4,8 @@
 setwd('/mnt/netapp2/Store_uni/home/ulc/co/jlb/git/DREAM-Microbiome/')
 
 # Arguments
-ExperimentName = 'seventh-experiment'
-input.dir.path = '02_training/toRun/basal_jlb/'
+ExperimentName = 'eigth-experiment'
+input.dir.path = '02_training/toRun/basal_jlb_v2/'
 out.dir.path = '02_training/results/'
 
 path.algs = '02_training/models/'
@@ -13,7 +13,7 @@ pattern.algs = '_mlr3.r'
 
 part = 'thinnodes'
 qos = 'default'
-time = '02:00:00'
+time = '10:00:00'
 mem = '120G'
 nodes = 1
 ntasks = 24

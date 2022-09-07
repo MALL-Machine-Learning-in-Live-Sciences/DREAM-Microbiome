@@ -63,7 +63,7 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
   if (cv.outer == 'CV') {
     outer = rsmp("cv", folds = 10)
   } else if (cv.outer == 'RepCV'){
-    outer = rsmp("repeated_cv",repeats= 50, folds = 10)
+    outer = rsmp("repeated_cv",repeats= 5, folds = 10)
   } else if (cv.outer == 'Holdout'){
     outer = rsmp("holdout", ratio = 0.6)
   } else{

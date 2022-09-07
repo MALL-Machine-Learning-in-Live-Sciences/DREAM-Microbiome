@@ -82,7 +82,7 @@ names(task.list.1) = projects
 names(task.list.2) = projects
 
 
-saveRDS(project.list.2, file = '../../02_training/data/preterm_by_cohort.rds')
+# saveRDS(project.list.2, file = '../../02_training/data/preterm_by_cohort.rds')
 
 costs = matrix(c(0, 1, 2, 0), 2)
 th = costs[2,1] / (costs[2,1] + costs[1,2])
@@ -119,6 +119,8 @@ names(pre.list.2) = projects   # all features
 
 
 # Check results!
-# i = 8
-# list(pre.list.1[[i]], pre.list.2[[i]])
+i = 8
+list(pre.list.1[[i]], pre.list.2[[i]])
+
+head(prediction$prob)
 
