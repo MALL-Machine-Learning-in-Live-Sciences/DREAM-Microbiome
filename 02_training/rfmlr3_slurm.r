@@ -14,15 +14,15 @@ rf.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.outer
                          target = "target", positive ="preterm")
   task$col_roles$stratum = "target"
   
-  print('Removing Constant Features')
-  rcf = po("removeconstants")
-  rcf = rcf$train(list(task = task))
-  task=rcf$output
-  
-  print('Normalizing Features')
-  nf = po("scale")
-  nf = nf$train(input = list(task))
-  task = nf$output
+  # print('Removing Constant Features')
+  # rcf = po("removeconstants")
+  # rcf = rcf$train(list(task = task))
+  # task=rcf$output
+  # 
+  # print('Normalizing Features')
+  # nf = po("scale")
+  # nf = nf$train(input = list(task))
+  # task = nf$output
 
   print('Select Hyperparameters')
   

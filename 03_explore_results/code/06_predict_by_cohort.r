@@ -11,18 +11,18 @@ files = files[-grep('reduced', files)]
 files = files[grep('rf', files)]
 
 
-i = 4
+i = 3
 files[i]
 bmr = readRDS(files[i])
 bmr$aggregate()
-rr = bmr$aggregate()[learner_id == "classif.randomForest.threshold.tuned", resample_result][[1]]
+rr = bmr$aggregate()[learner_id == "classif.randomForest.tuned", resample_result][[1]]
 
 # aggregate
 pred = rr$prediction()
 list(pred$confusion, 
      pred$score(measures = measures))
 
-costs = matrix(c(0, 2, 3, 0), 2)
+costs = matrix(c(0, 1, 2, 0), 2)
 (thold = costs[2,1] / (costs[2,1] + costs[1,2]))
 threshold = c(preterm = thold,                                                  
               term = 1 - thold)
@@ -50,7 +50,7 @@ model = outer_learners[[iter]]
 model
 
 cohorts = readRDS('~/git/DREAM-Microbiome/02_training/data/task_preterm_by_cohort.rds')
-test = cohorts$I
+test = cohorts$G
 extPred = model$predict(task = test)
 measures = list(msr("classif.acc", id = "Accuracy"),msr("classif.auc", id = "AUCROC"),
                 msr("classif.prauc", id = "PRAUC"),msr("classif.sensitivity", id = "Sensitivity"),
