@@ -83,6 +83,7 @@ names(task.list.2) = projects
 
 
 # saveRDS(project.list.2, file = '../../02_training/data/preterm_by_cohort.rds')
+# saveRDS(task.list.2, file = '../../02_training/data/task_preterm_by_cohort.rds')
 
 costs = matrix(c(0, 1, 2, 0), 2)
 th = costs[2,1] / (costs[2,1] + costs[1,2])
