@@ -41,17 +41,15 @@ rf.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.outer
 
 # Declare learner and measure
   learner = lrn("classif.randomForest",
-                predict_type = "prob") %>>% 
-    po("threshold")
-  l = GraphLearner$new(learner)
+                predict_type = "prob")
   measure = msr("classif.prauc")
   set_threads(learner,n = workers)
   
   # Hyperparameter Tuning
   psRF = ps(
-    classif.randomForest.mtry = p_int(lower = rf.mtry[1], upper = rf.mtry[2]),
-    classif.randomForest.nodesize = p_int(lower = rf.nodesize[1], upper = rf.nodesize[2]),
-    classif.randomForest.ntree = p_int(lower = rf.ntree[1], upper = rf.ntree[1]),
+    mtry = p_int(lower = rf.mtry[1], upper = rf.mtry[2]),
+    nodesize = p_int(lower = rf.nodesize[1], upper = rf.nodesize[2]),
+    ntree = p_int(lower = rf.ntree[1], upper = rf.ntree[1]),
     threshold.thresholds = p_dbl(lower = 0.1, upper = 0.9)
   )
 

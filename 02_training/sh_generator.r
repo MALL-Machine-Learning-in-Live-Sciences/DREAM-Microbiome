@@ -4,6 +4,7 @@ source('02_training/config_file.r')
 # Execute in parallel from Cesga
 input.paths = dir(path = input.dir.path)
 input.algs = dir(path = path.algs, pattern = pattern.algs)
+input.algs = input.algs[grep('RF', input.algs)]
 
 
 for (i in 1:length(input.paths)) {
