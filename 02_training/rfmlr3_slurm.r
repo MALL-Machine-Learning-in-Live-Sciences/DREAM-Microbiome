@@ -49,8 +49,7 @@ rf.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.outer
   psRF = ps(
     mtry = p_int(lower = rf.mtry[1], upper = rf.mtry[2]),
     nodesize = p_int(lower = rf.nodesize[1], upper = rf.nodesize[2]),
-    ntree = p_int(lower = rf.ntree[1], upper = rf.ntree[1]),
-    threshold.thresholds = p_dbl(lower = 0.1, upper = 0.9)
+    ntree = p_int(lower = rf.ntree[1], upper = rf.ntree[1])
   )
 
   at = AutoTuner$new(learner = learner, resampling = inner, measure = measure,
