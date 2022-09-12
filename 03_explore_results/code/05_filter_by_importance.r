@@ -1,12 +1,12 @@
 # Select best model
 # ===
 require(tidyverse)
-setwd('~/git/DREAM-Microbiome/02_training/results/eigth-experiment/')
+setwd('~/git/DREAM-Microbiome/02_training/results/nineth-experiment/')
 files = list.files(pattern = 'all_32_reduced_rf')
 files
 
-bmr = readRDS(files[1])
-df = readRDS(files[2])
+bmr = readRDS(files[3])
+# df = readRDS(files[2])
 data = as.data.table(bmr)
 outer_learners = map(data$learner, "learner")
 
@@ -18,7 +18,7 @@ imp = list()
 # i = 1
 for (i in seq_along(models)) {
   m = models[[i]]
-  imp[[i]] = m$model[[1]]$model$importance
+  imp[[i]] = m$model$importance
 }
 imp = as.data.frame(imp)
 imp = rowSums(imp)
@@ -31,6 +31,7 @@ toPlot = data.frame(
 toPlot = toPlot[order(toPlot$imp, decreasing = T),]
 
 require(viridis)
+require(ggplot2)
 plotFI = ggplot(toPlot, aes(x = reorder(features, imp), y = imp))+
   geom_segment( aes(xend=features, yend=0,), color = viridis(3)[2]) +
   geom_point( size=2, color=viridis(1)) +
@@ -89,12 +90,14 @@ importance = toPlot$features[which(toPlot$imp > 200)]
 features = unique(c(intersect(importance, intersect(a, intersect(b, c))), f))
 features1 = features[-grep('score', features)]
 features2 = features[-grep('phylo_entropy', features)]
+features3 = features[-grep('NIH', features)]
 
 signatures = list(
   topRF = importance,
   feat1 = features,
   feat2 = features1, 
-  feat3 = features2
+  feat3 = features2,
+  feat4 = features3
 )
 
 signatures

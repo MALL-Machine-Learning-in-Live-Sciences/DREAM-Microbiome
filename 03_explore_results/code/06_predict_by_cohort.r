@@ -13,7 +13,7 @@ measures = list(msr("classif.acc", id = "Accuracy"),msr("classif.auc", id = "AUC
                 msr("classif.prauc", id = "PRAUC"),msr("classif.sensitivity", id = "Sensitivity"),
                 msr("classif.specificity", id = "Specificity"))
 
-preterm = 'all_28'  #all_28 all_32
+preterm = 'all_32'  #all_28 all_32
 
 files = list.files(pattern = preterm)
 files = files[-grep('df_iter', files)]
@@ -32,7 +32,7 @@ pred = rr$prediction()
 list(pred$confusion, 
      pred$score(measures = measures))
 
-costs = matrix(c(0, 1, 4, 0), 2)
+costs = matrix(c(0, 2, 3, 0), 2)
 (thold = costs[2,1] / (costs[2,1] + costs[1,2]))
 threshold = c(preterm = thold,                                                  
               term = 1 - thold)
@@ -108,10 +108,9 @@ for (iter in 1:50) {
   model = outer_learners[[iter]]
   model
   
-  extPred = model$predict(task = cohortI)
+  extPred = model$predict(task = cohortH)
   extPred$set_threshold(threshold) 
   print(list(
-    extPred$confusion,
     extPred$score(measures = measures)))
 }
 
