@@ -75,11 +75,17 @@ I.target = cohortI %>%
   select(id, target) %>% 
   group_by(id) %>% 
   slice(1)
-cohortI = cohortI %>% 
+cohortI = cohortI %>%
   group_by(id) %>%
-  summarise(across(-target, median)) %>% 
-  mutate(target = I.target$target) %>% 
-  select(-id)
+  slice(1)
+
+cohortI = subset(cohortI, select = -c(id))
+
+# cohortI = cohortI %>% 
+#   group_by(id) %>%
+#   summarise(across(-target, median)) %>% 
+#   mutate(target = I.target$target) %>% 
+#   select(-id)
 rownames(cohortI) = I.target$id
 
 
@@ -101,19 +107,74 @@ cohortG = makeTask('cohortG', cohortG)
 cohortH = makeTask('cohortH', cohortH)
 cohortI = makeTask('cohortI', cohortI)
 
+cohorts = list(cohortA = cohortA, 
+               cohortC = cohortC, 
+               cohortD = cohortD, 
+               cohortE = cohortE, 
+               cohortF = cohortF, 
+               cohortG = cohortG, 
+               cohortH = cohortH, 
+               cohortI = cohortI)
+
 # get model
+iter = 1
+c = 1
+res = list()
+allres = list()
 for (iter in 1:50) {
   data = as.data.table(bmr)
   outer_learners = map(data$learner, "learner")
   model = outer_learners[[iter]]
   model
   
-  extPred = model$predict(task = cohortH)
-  extPred$set_threshold(threshold) 
-  print(list(
-    extPred$score(measures = measures)))
+  for (c in seq_along(cohorts)) {
+    extPred = model$predict(task = cohorts[[c]])
+    extPred$set_threshold(threshold) 
+    res[[c]] = data.frame(
+      cohort = names(cohorts)[c],
+      iter = iter,
+      acc = extPred$score(measures = measures)[1],
+      auc = extPred$score(measures = measures)[2],
+      prauc = extPred$score(measures = measures)[3],
+      sens = extPred$score(measures = measures)[4],
+      spec = extPred$score(measures = measures)[5])
+    r = data.table::rbindlist(res)
+  }
+  allres[[iter]] = r
 }
+allres = data.table::rbindlist(allres)
+
+select = allres
+
+select = select[which(select$cohort != 'cohortI'),]
+
+select$mean = apply(select[,c(3:7)], 1, function(x) mean(x))
+
+
+kk = select %>% 
+  as_tibble() %>% 
+  group_by(iter) %>% 
+  summarise(mean = mean(mean, na.rm=TRUE))
 
 
 
 
+# 
+outer_learners[[47]]
+outer_learners[[10]]
+outer_learners[[50]]
+
+outer_learners[[5]]
+outer_learners[[33]]
+
+
+
+# select and save best model!
+best = outer_learners[[50]]
+saveRDS(best, file = '~/git/DREAM-Microbiome/02_training/bestModels/model_all_32.rds')
+
+
+costs = matrix(c(0, 2, 3, 0), 2)
+(thold = costs[2,1] / (costs[2,1] + costs[1,2]))
+threshold = c(preterm = thold,                                                  
+              term = 1 - thold)

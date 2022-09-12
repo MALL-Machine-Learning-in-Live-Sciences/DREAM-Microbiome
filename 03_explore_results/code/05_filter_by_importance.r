@@ -2,10 +2,10 @@
 # ===
 require(tidyverse)
 setwd('~/git/DREAM-Microbiome/02_training/results/nineth-experiment/')
-files = list.files(pattern = 'all_32_reduced_rf')
+files = list.files(pattern = 'd1_all_32_reduced_rf.rds')
 files
 
-bmr = readRDS(files[3])
+bmr = readRDS(files[1])
 # df = readRDS(files[2])
 data = as.data.table(bmr)
 outer_learners = map(data$learner, "learner")
