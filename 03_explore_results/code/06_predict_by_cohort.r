@@ -21,7 +21,7 @@ files = files[grep('reduced', files)]
 files = files[grep('rf', files)]
 
 
-i = 1
+i = 5
 (name.train = gsub('_rf', '', files[i]))
 bmr = readRDS(files[i])
 bmr$aggregate()

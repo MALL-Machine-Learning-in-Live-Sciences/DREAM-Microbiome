@@ -6,8 +6,8 @@ require(mlr3)
 
 # Paths (to change!)
 inputDir = '~/git/DREAM-Microbiome/extdata/'
-modelfile = '~/git/DREAM-Microbiome/02_training/bestModels/model_all_32.rds'
-outPath = '~/git/DREAM-Microbiome/02_training/bestModels/predictions.csv'
+modelfile = '~/git/DREAM-Microbiome/04_docker/model/model_all_32.rds'
+outPath = '~/git/DREAM-Microbiome/04_docker/output/predictions.csv'
 
 # Load data
 setwd(inputDir)
