@@ -113,5 +113,21 @@ res = res[order(-score), .SD[1,], by=participant_id]
 
 res = subset(res, select = c(participant_id, was_preterm, probability))
 
+names(res)[1] = 'participant'
+
+# Calculate metrics!
+require(MLmetrics)
+require(pROC)
+
+metrics = paste0('AUC = ', round(AUC(y_pred = res$probability, y_true = res$true), 2), '\n', 
+                 'PRAUC = ', round(PRAUC(y_pred = res$probability, y_true = res$true), 2), '\n',
+                 'Accuracy = ', round(Accuracy(y_pred = res$was_preterm, y_true = res$true), 2), '\n',
+                 'Sensitivity = ', round(Sensitivity(y_true = res$true, y_pred = res$was_preterm), 2), '\n',
+                 'Specifity = ', round(Specificity(y_true = res$true, y_pred = res$was_preterm), 2))
+cat(metrics)
+table(res$was_preterm, res$true)
+head(res)
+table(res$true)
+
 write.csv(res, file = outPath, quote = F, row.names = F)
 
