@@ -3,6 +3,9 @@
 
 # install.packages('mlr3')
 require(mlr3)
+require(data.table)
+require(dplyr)
+require(scales)
 
 # Paths (to change!)
 inputDir = '~/git/DREAM-Microbiome/extdata/'
@@ -105,7 +108,6 @@ predictions = predictions %>%
          score = scoreProbs * scoreWeek)
 
 # Remodeling predictions!
-require(data.table)
 res = as.data.table(predictions)
 res = res[order(-score), .SD[1,], by=participant_id]
 
