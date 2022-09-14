@@ -75,17 +75,41 @@ data = data.frame(
 # Load model
 model = readRDS(modelfile)
 
+# Predictions
+# ====
 pred = model$predict_newdata(data)
 costs = matrix(c(0, 2, 3, 0), 2)
 (thold = costs[2,1] / (costs[2,1] + costs[1,2]))
-threshold = c(preterm = thold,                                                  
+threshold = c(preterm = thold,
               term = 1 - thold)
 pred$set_threshold(threshold = threshold)
 
 predictions = data.frame(
-  participan = pred$data$row_ids,
-  was_preterm = ifelse(pred$data$response == 'preterm', TRUE, FALSE),
+  specimen = meta$specimen,
+  participant_id = meta$participant_id,
+  collect_week = meta$collect_wk,
+  was_preterm = ifelse(pred$data$response == 'preterm', 1, 0),
   probability = pred$data$prob[,1]
 )
 
-write.csv(predictions, file = outPath, quote = F, row.names = F)
+score = function(prob){
+  x = abs(prob - 0.5)
+  return(x)
+}
+
+predictions = predictions %>% 
+  as_tibble() %>% 
+  mutate(scoreProbs = unlist(sapply(probability, score)),
+         scoreWeek = rescale(ntile(collect_week, 10),
+                             to = c(0.5 , 1)),
+         score = scoreProbs * scoreWeek)
+
+# Remodeling predictions!
+require(data.table)
+res = as.data.table(predictions)
+res = res[order(-score), .SD[1,], by=participant_id]
+
+res = subset(res, select = c(participant_id, was_preterm, probability))
+
+write.csv(res, file = outPath, quote = F, row.names = F)
+
