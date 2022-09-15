@@ -17,7 +17,7 @@ preterm = 'all_32'  #all_28 all_32
 
 files = list.files(pattern = preterm)
 files = files[-grep('df_iter', files)]
-files = files[grep('noScaled', files)]
+files = files[grep('zscore', files)]
 files = files[grep('rf', files)]
 
 
@@ -32,7 +32,7 @@ pred = rr$prediction()
 list(pred$confusion, 
      pred$score(measures = measures))
 
-costs = matrix(c(0, 2, 3, 0), 2)
+costs = matrix(c(0, 1, 4, 0), 2)
 (thold = costs[2,1] / (costs[2,1] + costs[1,2]))
 threshold = c(preterm = thold,                                                  
               term = 1 - thold)
@@ -47,7 +47,7 @@ preds = rr$predictions()
 for (i in seq_along(preds)) {
   p = preds[[i]]
   p$set_threshold(threshold = threshold)
-  print(list(p$score(measures = measures)))
+  print(list(p$confusion))
 }
 
 
@@ -152,6 +152,6 @@ allres = data.table::rbindlist(allres)
 
 # select and save best model!
 best = outer_learners[[1]]
-saveRDS(best, file = paste0('~/git/DREAM-Microbiome/02_training/bestModels/', files))
+saveRDS(best, file = paste0('~/git/DREAM-Microbiome/04_docker/task1/try3/model/', files))
 
 

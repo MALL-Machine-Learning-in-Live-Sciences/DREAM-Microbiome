@@ -53,7 +53,6 @@ data = cbind(
 model = readRDS(modelfile)
 features = model$state$train_task$feature_names
 data = data[features]
-data$true = ifelse(meta$was_term == "False",1,0 )
 
 # Predictions
 # ====
