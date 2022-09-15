@@ -8,19 +8,20 @@ glmnet.bmr.slurm = function(data, set.seed, name, path = '', filename = '', cv.i
 
   print('Making task')
   data$target= as.factor(data$target)
+  data[sapply(data, is.numeric)] <- lapply(data[sapply(data, is.numeric)], as.numeric)
   task = TaskClassif$new(id = paste(name, 'nfeat', ncol(data)-1, sep = '_'), backend = data ,
                          target = "target", positive ="preterm")
   task$col_roles$stratum = "target"
   
-  print('Removing Constant Features')
-  rcf = po("removeconstants")
-  rcf = rcf$train(list(task = task))
-  task=rcf$output
+  # print('Removing Constant Features')
+  # rcf = po("removeconstants")
+  # rcf = rcf$train(list(task = task))
+  # task=rcf$output
   
-  print('Normalizing Features')
-  nf = po("scale")
-  nf = nf$train(input = list(task))
-  task = nf$output
+  # print('Normalizing Features')
+  # nf = po("scale")
+  # nf = nf$train(input = list(task))
+  # task = nf$output
 
   print('Select Hyperparameters')
   
@@ -39,9 +40,7 @@ glmnet.bmr.slurm = function(data, set.seed, name, path = '', filename = '', cv.i
 
   # Declare learner and measure
   learner = lrn("classif.glmnet",
-                predict_type = "prob") %>>% 
-    po("threshold")
-  l = GraphLearner$new(learner)
+                predict_type = "prob")
   measure = msr("classif.prauc")
   
 
@@ -50,8 +49,7 @@ glmnet.bmr.slurm = function(data, set.seed, name, path = '', filename = '', cv.i
     classif.glmnet.alpha = p_dbl(lower = gl.alpha[1], upper = gl.alpha[2]),
     classif.glmnet.s = p_dbl(lower = gl.s[1], upper = gl.s[2]),
     classif.glmnet.nlambda = p_int(lower = gl.nlambda, upper= gl.nlambda),
-    classif.glmnet.lambda.min.ratio = p_dbl(lower = gl.lambda.min.ratio, upper = gl.lambda.min.ratio),
-    threshold.thresholds = p_dbl(lower = 0.1, upper = 0.9)
+    classif.glmnet.lambda.min.ratio = p_dbl(lower = gl.lambda.min.ratio, upper = gl.lambda.min.ratio)
   )
 
 at = AutoTuner$new(learner = learner, resampling = inner, measure = measure,

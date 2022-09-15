@@ -8,19 +8,20 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
 
   print('Making task')
   data$target= as.factor(data$target)
+  data[sapply(data, is.numeric)] <- lapply(data[sapply(data, is.numeric)], as.numeric)
   task = TaskClassif$new(id = paste(name, 'nfeat', ncol(data)-1, sep = '_'), backend = data ,
                          target = "target", positive ="preterm")
   task$col_roles$stratum = "target"
   
-  print('Removing Constant Features')
-  rcf = po("removeconstants")
-  rcf = rcf$train(list(task = task))
-  task=rcf$output
+  #print('Removing Constant Features')
+  #rcf = po("removeconstants")
+  #rcf = rcf$train(list(task = task))
+  #task=rcf$output
   
-  print('Normalizing Features')
-  nf = po("scale")
-  nf = nf$train(input = list(task))
-  task = nf$output
+  #print('Normalizing Features')
+  #nf = po("scale")
+  #nf = nf$train(input = list(task))
+  #task = nf$output
 
   print('Select Hyperparameters')
   
@@ -39,9 +40,7 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
   
   # Declare learner  and measure
   learner = lrn("classif.xgboost",
-                predict_type = "prob") %>>% 
-    po("threshold")
-  l = GraphLearner$new(learner)
+                predict_type = "prob")
   measure = msr("classif.prauc")
   
   # Hyperparameter Tuning
@@ -50,8 +49,7 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
     classif.xgboost.alpha = p_dbl(lower = xg.alpha[1], upper = xg.alpha[2]),
     classif.xgboost.eta = p_dbl(lower = xg.eta[1], upper = xg.eta[2]),
     classif.xgboost.lambda = p_dbl(lower = xg.lambda[1], upper = xg.lambda[2]),
-    classif.xgboost.gamma = p_dbl(lower = xg.gamma[1], upper = xg.gamma[2]),
-    classif.xgboost.max_depth = p_int(lower = xg.max_depth[1], upper = xg.max_depth[2])
+    classif.xgboost.gamma = p_dbl(lower = xg.gamma[1], upper = xg.gamma[2])
   )
   at = AutoTuner$new(learner = learner, resampling = inner, measure = measure,
                      terminator = terminator, tuner = tuner, search_space = psxGB,
