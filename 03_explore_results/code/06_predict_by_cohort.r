@@ -1,4 +1,4 @@
-setwd('~/git/DREAM-Microbiome/02_training/results/nineth-experiment/')
+setwd('~/git/DREAM-Microbiome/02_training/results/by_participant/')
 
 require(mlr3)
 require(mlr3pipelines)
@@ -17,11 +17,11 @@ preterm = 'all_32'  #all_28 all_32
 
 files = list.files(pattern = preterm)
 files = files[-grep('df_iter', files)]
-files = files[grep('reduced', files)]
+files = files[grep('noScaled', files)]
 files = files[grep('rf', files)]
 
 
-i = 5
+i = 1
 (name.train = gsub('_rf', '', files[i]))
 bmr = readRDS(files[i])
 bmr$aggregate()
@@ -54,39 +54,40 @@ for (i in seq_along(preds)) {
 
 # Prediction by cohort
 # ===
-data = readRDS(paste0('~/git/DREAM-Microbiome/02_training/toRun/basal/', preterm, '.rds'))
-signature = colnames(readRDS(paste0('~/git/DREAM-Microbiome/02_training/toRun/basal_jlb_v3/', name.train)))
+data = readRDS(paste0('~/git/DREAM-Microbiome/02_training/toRun/by_participant/', name.train))
+# signature = colnames(readRDS(paste0('~/git/DREAM-Microbiome/02_training/toRun/basal_jlb_v3/', name.train)))
 data$target = as.factor(data$target)
-data[,grep('NIH.', colnames(data))] = apply(data[,grep('NIH.', colnames(data))], 2, function(x) as.numeric(x))
+# data[,grep('NIH.', colnames(data))] = apply(data[,grep('NIH.', colnames(data))], 2, function(x) as.numeric(x))
 # cohorts = readRDS('~/git/DREAM-Microbiome/02_training/data/task_preterm_by_cohort.rds')
 str(data)
-cohortA = data[grep('A', rownames(data)), match(signature, colnames(data))]
-cohortC = data[grep('C', rownames(data)), match(signature, colnames(data))]
-cohortD = data[grep('D', rownames(data)), match(signature, colnames(data))]
-cohortE = data[grep('E', rownames(data)), match(signature, colnames(data))]
-cohortF = data[grep('F', rownames(data)), match(signature, colnames(data))]
-cohortG = data[grep('G', rownames(data)), match(signature, colnames(data))]
-cohortH = data[grep('H', rownames(data)), match(signature, colnames(data))]
-cohortI = data[grep('I', rownames(data)), match(signature, colnames(data))]
-
-require(dplyr)
-cohortI$id = sapply(strsplit(rownames(cohortI), '-'), '[[', 1)
-I.target = cohortI %>%
-  select(id, target) %>% 
-  group_by(id) %>% 
-  slice(1)
-cohortI = cohortI %>%
-  group_by(id) %>%
-  slice(1)
-
-cohortI = subset(cohortI, select = -c(id))
+cohortA = data[grep('A', rownames(data)),]
+cohortB = data[grep('B', rownames(data)),]
+cohortC = data[grep('C', rownames(data)),]
+cohortD = data[grep('D', rownames(data)),]
+cohortE = data[grep('E', rownames(data)),]
+cohortF = data[grep('F', rownames(data)),]
+cohortG = data[grep('G', rownames(data)),]
+cohortH = data[grep('H', rownames(data)),]
+cohortI = data[grep('I', rownames(data)),]
+cohortJ = data[grep('J', rownames(data)),]
+# require(dplyr)
+# cohortI$id = sapply(strsplit(rownames(cohortI), '-'), '[[', 1)
+# I.target = cohortI %>%
+#   select(id, target) %>% 
+#   group_by(id) %>% 
+#   slice(1)
+# cohortI = cohortI %>%
+#   group_by(id) %>%
+#   slice(1)
+# 
+# cohortI = subset(cohortI, select = -c(id))
 
 # cohortI = cohortI %>% 
 #   group_by(id) %>%
 #   summarise(across(-target, median)) %>% 
 #   mutate(target = I.target$target) %>% 
 #   select(-id)
-rownames(cohortI) = I.target$id
+# rownames(cohortI) = I.target$id
 
 
 
@@ -99,6 +100,7 @@ makeTask = function(name, data){
 }
 
 cohortA = makeTask('cohortA', cohortA)
+cohortB = makeTask('cohortB', cohortB)
 cohortC = makeTask('cohortC', cohortC)
 cohortD = makeTask('cohortD', cohortD)
 cohortE = makeTask('cohortE', cohortE)
@@ -106,19 +108,22 @@ cohortF = makeTask('cohortF', cohortF)
 cohortG = makeTask('cohortG', cohortG)
 cohortH = makeTask('cohortH', cohortH)
 cohortI = makeTask('cohortI', cohortI)
+cohortJ = makeTask('cohortJ', cohortJ)
 
-cohorts = list(cohortA = cohortA, 
+cohorts = list(cohortA = cohortA,
+               cohortB = cohortB,
                cohortC = cohortC, 
                cohortD = cohortD, 
                cohortE = cohortE, 
                cohortF = cohortF, 
                cohortG = cohortG, 
                cohortH = cohortH, 
-               cohortI = cohortI)
+               cohortI = cohortI,
+               cohortJ = cohortJ)
 
 # get model
-iter = 1
-c = 1
+# iter = 1
+# c = 1
 res = list()
 allres = list()
 for (iter in 1:50) {
@@ -144,37 +149,9 @@ for (iter in 1:50) {
 }
 allres = data.table::rbindlist(allres)
 
-select = allres
-
-select = select[which(select$cohort != 'cohortI'),]
-
-select$mean = apply(select[,c(3:7)], 1, function(x) mean(x))
-
-
-kk = select %>% 
-  as_tibble() %>% 
-  group_by(iter) %>% 
-  summarise(mean = mean(mean, na.rm=TRUE))
-
-
-
-
-# 
-outer_learners[[47]]
-outer_learners[[10]]
-outer_learners[[50]]
-
-outer_learners[[5]]
-outer_learners[[33]]
-
-
 
 # select and save best model!
-best = outer_learners[[50]]
-saveRDS(best, file = '~/git/DREAM-Microbiome/02_training/bestModels/model_all_32.rds')
+best = outer_learners[[1]]
+saveRDS(best, file = paste0('~/git/DREAM-Microbiome/02_training/bestModels/', files))
 
 
-costs = matrix(c(0, 2, 3, 0), 2)
-(thold = costs[2,1] / (costs[2,1] + costs[1,2]))
-threshold = c(preterm = thold,                                                  
-              term = 1 - thold)
