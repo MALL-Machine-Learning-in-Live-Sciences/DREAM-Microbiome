@@ -46,10 +46,10 @@ glmnet.bmr.slurm = function(data, set.seed, name, path = '', filename = '', cv.i
 
   # Hyperparameter Tuning
   psGL = ps(
-    classif.glmnet.alpha = p_dbl(lower = gl.alpha[1], upper = gl.alpha[2]),
-    classif.glmnet.s = p_dbl(lower = gl.s[1], upper = gl.s[2]),
-    classif.glmnet.nlambda = p_int(lower = gl.nlambda, upper= gl.nlambda),
-    classif.glmnet.lambda.min.ratio = p_dbl(lower = gl.lambda.min.ratio, upper = gl.lambda.min.ratio)
+    alpha = p_dbl(lower = gl.alpha[1], upper = gl.alpha[2]),
+    s = p_dbl(lower = gl.s[1], upper = gl.s[2]),
+    nlambda = p_int(lower = gl.nlambda, upper= gl.nlambda),
+    lambda.min.ratio = p_dbl(lower = gl.lambda.min.ratio, upper = gl.lambda.min.ratio)
   )
 
 at = AutoTuner$new(learner = learner, resampling = inner, measure = measure,

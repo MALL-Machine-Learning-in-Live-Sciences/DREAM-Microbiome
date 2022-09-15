@@ -45,11 +45,11 @@ xgboost.bmr.slurm = function(data, name, path = '', filename = '', cv.inner, cv.
   
   # Hyperparameter Tuning
   psxGB<-ps(
-    classif.xgboost.booster = p_fct(levels = xg.booster),
-    classif.xgboost.alpha = p_dbl(lower = xg.alpha[1], upper = xg.alpha[2]),
-    classif.xgboost.eta = p_dbl(lower = xg.eta[1], upper = xg.eta[2]),
-    classif.xgboost.lambda = p_dbl(lower = xg.lambda[1], upper = xg.lambda[2]),
-    classif.xgboost.gamma = p_dbl(lower = xg.gamma[1], upper = xg.gamma[2])
+    booster = p_fct(levels = xg.booster),
+    alpha = p_dbl(lower = xg.alpha[1], upper = xg.alpha[2]),
+    eta = p_dbl(lower = xg.eta[1], upper = xg.eta[2]),
+    lambda = p_dbl(lower = xg.lambda[1], upper = xg.lambda[2]),
+    gamma = p_dbl(lower = xg.gamma[1], upper = xg.gamma[2])
   )
   at = AutoTuner$new(learner = learner, resampling = inner, measure = measure,
                      terminator = terminator, tuner = tuner, search_space = psxGB,
