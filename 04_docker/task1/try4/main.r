@@ -6,12 +6,8 @@ require(dplyr)
 require(scales)
 
 # Paths (to change!)
-#inputDir = '~/git/DREAM-Microbiome/extdata/'
 modelfile = '/usr/local/bin/model/all_32_byparticipant_noScaled_xgboost.rds'
 outPath = '/output/predictions.csv'
-
-# Load data
-#setwd(inputDir)
 
 # Covariates
 meta = read.csv('/input/metadata/metadata.csv', header = T, row.names = 2)
@@ -25,10 +21,6 @@ colnames(phylotypes1e1) = paste(colnames(phylotypes1e1),"1e1",sep="_")
 phylotypes5e1 = read.csv('/input/phylotypes/phylotype_relabd.5e_1.csv', header = T, row.names = 1)
 colnames(phylotypes5e1) = paste(colnames(phylotypes5e1),"5e1",sep="_")
 phylotypes1e0 = read.csv('/input/phylotypes/phylotype_relabd.1e0.csv', header = T, row.names = 1)
-colnames(phylotypes1e0) = paste(colnames(phylotypes1e0),"1e0",sep="_")
-
-
-# Taxonomy
 family = read.csv('/input/taxonomy/taxonomy_relabd.family.csv', header = T, row.names = 1)
 colnames(family) = paste(colnames(family),"f",sep="_")
 genus = read.csv('/input/taxonomy/taxonomy_relabd.genus.csv', header = T, row.names = 1)
