@@ -17,22 +17,22 @@ preterm = 'all_32'  #all_28 all_32
 
 files = list.files(pattern = preterm)
 files = files[-grep('df_iter', files)]
-files = files[grep('zscore', files)]
-files = files[grep('rf', files)]
+files = files[grep('noScaled', files)]
+files = files[grep('xgboost', files)]
 
 
 i = 1
-(name.train = gsub('_rf', '', files[i]))
+(name.train = gsub('_xgboost', '', files[i]))
 bmr = readRDS(files[i])
 bmr$aggregate()
-rr = bmr$aggregate()[learner_id == "classif.randomForest.tuned", resample_result][[1]]
+rr = bmr$aggregate()[learner_id == "classif.xgboost.tuned", resample_result][[1]]
 
 # aggregate
 pred = rr$prediction()
 list(pred$confusion, 
      pred$score(measures = measures))
 
-costs = matrix(c(0, 1, 4, 0), 2)
+costs = matrix(c(0, 1, 2, 0), 2)
 (thold = costs[2,1] / (costs[2,1] + costs[1,2]))
 threshold = c(preterm = thold,                                                  
               term = 1 - thold)
@@ -151,7 +151,7 @@ allres = data.table::rbindlist(allres)
 
 
 # select and save best model!
-best = outer_learners[[1]]
-saveRDS(best, file = paste0('~/git/DREAM-Microbiome/04_docker/task1/try3/model/', files))
+best = outer_learners[[6]]
+saveRDS(best, file = paste0('~/git/DREAM-Microbiome/04_docker/task1/try4/model/', files))
 
 

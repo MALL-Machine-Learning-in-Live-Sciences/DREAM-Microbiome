@@ -6,34 +6,34 @@ require(dplyr)
 require(scales)
 
 # Paths (to change!)
-inputDir = '~/git/DREAM-Microbiome/extdata/'
-modelfile = '~/git/DREAM-Microbiome/04_docker/task1/try3/model/all_32_byparticipant_zscore_rf.rds'
-outPath = '~/git/DREAM-Microbiome/04_docker/task1/try3/output/predictions.csv'
+#inputDir = '~/git/DREAM-Microbiome/extdata/'
+modelfile = '/usr/local/bin/model/all_32_byparticipant_zscore_rf.rds'
+outPath = '/output/predictions.csv'
 
 # Load data
-setwd(inputDir)
+#setwd(inputDir)
 
 # Covariates
-meta = read.csv('metadata/metadata.csv', header = T, row.names = 2)
+meta = read.csv('/input/metadata/metadata.csv', header = T, row.names = 2)
 names(meta)[5] <- "collect_week"
-phylo_entropy = read.csv('alpha_diversity/alpha_diversity.csv', header = T, row.names = 1)
-score = read.csv('community_state_types/cst_valencia.csv', header = T, row.names = 1)
+phylo_entropy = read.csv('/input/alpha_diversity/alpha_diversity.csv', header = T, row.names = 1)
+score = read.csv('/input/community_state_types/cst_valencia.csv', header = T, row.names = 1)
 
 # Phylotypes
-phylotypes1e1 = read.csv('phylotypes/phylotype_relabd.1e_1.csv', header = T, row.names = 1)
+phylotypes1e1 = read.csv('/input/phylotypes/phylotype_relabd.1e_1.csv', header = T, row.names = 1)
 colnames(phylotypes1e1) = paste(colnames(phylotypes1e1),"1e1",sep="_")
-phylotypes5e1 = read.csv('phylotypes/phylotype_relabd.5e_1.csv', header = T, row.names = 1)
+phylotypes5e1 = read.csv('/input/phylotypes/phylotype_relabd.5e_1.csv', header = T, row.names = 1)
 colnames(phylotypes5e1) = paste(colnames(phylotypes5e1),"5e1",sep="_")
-phylotypes1e0 = read.csv('phylotypes/phylotype_relabd.1e0.csv', header = T, row.names = 1)
+phylotypes1e0 = read.csv('/input/phylotypes/phylotype_relabd.1e0.csv', header = T, row.names = 1)
 colnames(phylotypes1e0) = paste(colnames(phylotypes1e0),"1e0",sep="_")
 
 
 # Taxonomy
-family = read.csv('taxonomy/taxonomy_relabd.family.csv', header = T, row.names = 1)
+family = read.csv('/input/taxonomy/taxonomy_relabd.family.csv', header = T, row.names = 1)
 colnames(family) = paste(colnames(family),"f",sep="_")
-genus = read.csv('taxonomy/taxonomy_relabd.genus.csv', header = T, row.names = 1)
+genus = read.csv('/input/taxonomy/taxonomy_relabd.genus.csv', header = T, row.names = 1)
 colnames(genus) = paste(colnames(genus),"g",sep="_")
-species = read.csv('taxonomy/taxonomy_relabd.species.csv', header = T, row.names = 1)
+species = read.csv('/input/taxonomy/taxonomy_relabd.species.csv', header = T, row.names = 1)
 colnames(species) = paste(colnames(species),"s",sep="_")
 
 identical(rownames(species), rownames(phylotypes1e0))

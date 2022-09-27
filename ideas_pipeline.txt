@@ -1,5 +1,0 @@
-1. Sacar bichos por cohorte mediante FS longitudinal
-2. Sacar bichos por cohort mediante expresion diferencial
-3. Seleccionar cohortes para entrenamiento
-4. Ver variables clínicas asociadas al pretérmino
-5. Añadir subgrupo grande de variables y correr feature selection (fcbf, ¿wrapper?)

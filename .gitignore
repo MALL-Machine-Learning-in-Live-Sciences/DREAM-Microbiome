@@ -24,3 +24,11 @@ plots/*.jpeg
 01_preprocess_data/data/feature_selection
 01_preprocess_data/plots/
 00_exploratory_analysis/plots
+04_docker/task1/try2/mlr3extralearners-0.5.48/
+04_docker/task1/try3/mlr3extralearners-0.5.48/
+04_docker/task1/try4/mlr3extralearners-0.5.48/
+04_docker/task2/try1/mlr3extralearners-0.5.48/
+04_docker/task2/try2/mlr3extralearners-0.5.48/
+04_docker/task2/try3/mlr3extralearners-0.5.48/
+04_docker/task2/try4/mlr3extralearners-0.5.48/
+runLocally.sh
