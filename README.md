@@ -28,3 +28,6 @@ All the models were biospecimen-specific, thus, to obtain a prediction by partic
 
 ## Conclusion/Discussion
 We have developed a two steps model to predict preterm events. We used biological information to reduce non relevant features according to the correlation with the collection week and the differential expression between conditions. We observe a lot of difference in some of the data of the challenge due to the great heterogeneity of the data available to us. Our strategy to calculate a score according to the collect week allows us to weight the robustness of the prediction in order to avoid false positives.
+
+## Citation
+Golob, J. L., Oskotsky, T. T., Tang, A. S., Roldan, A., Chung, V., Ha, C. W., ... & Sirota, M. (2023). Microbiome preterm birth DREAM challenge: Crowdsourcing machine learning approaches to advance preterm birth research. medRxiv. [10.1101/2023.03.07.23286920](https://www.medrxiv.org/content/10.1101/2023.03.07.23286920v1.full)
